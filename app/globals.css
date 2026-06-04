@@ -1,26 +1,151 @@
-@import "tailwindcss";
+/* ============================================================
+   GTOOLS — Graphic Tools Museum
+   Global styles + design tokens
+   Source of truth: colors_and_type.css from the GTOOLS Design System
+   ============================================================ */
+
+@font-face {
+  font-family: "Nimbus Sans L";
+  font-style: normal;
+  font-weight: 400;
+  src: url("/fonts/NimbusSansL-Regular.ttf") format("truetype");
+  font-display: swap;
+}
+@font-face {
+  font-family: "Nimbus Sans L";
+  font-style: normal;
+  font-weight: 700;
+  src: url("/fonts/NimbusSansL-Bold.ttf") format("truetype");
+  font-display: swap;
+}
+@font-face {
+  font-family: "Sometype Mono";
+  font-style: normal;
+  font-weight: 400;
+  src: url("/fonts/SometypeMono-Medium.otf") format("opentype");
+  font-display: swap;
+}
+@font-face {
+  font-family: "Sometype Mono";
+  font-style: normal;
+  font-weight: 500;
+  src: url("/fonts/SometypeMono-Medium.otf") format("opentype");
+  font-display: swap;
+}
+@font-face {
+  font-family: "Sometype Mono";
+  font-style: normal;
+  font-weight: 700;
+  src: url("/fonts/SometypeMono-Bold.otf") format("opentype");
+  font-display: swap;
+}
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* ── STAGE ── */
+  --bg:               rgb(0, 0, 0);
+  --surface:          rgb(195, 195, 195);
+  --surface-soft:     rgba(195, 195, 195, 0.7647);
+  --ink:              rgb(2, 2, 2);
+  --ink-on-dark:      rgb(195, 195, 195);
+  --ink-quiet:        rgb(195, 195, 195);
+  --accent-purple:    rgb(79, 4, 200);
+  --tool-link:        rgb(195, 195, 195);
+
+  /* ── CATEGORY COLOURS ── */
+  --cat-web:            rgb(224, 255, 163);
+  --cat-news:           rgb(255, 234, 0);
+  --cat-alt-software:   rgb(13, 255, 0);
+  --cat-fonts:          rgb(255, 53, 255);
+  --cat-small-tech:     rgb(53, 161, 255);
+  --cat-big-tech:       rgb(255, 53, 53);
+  --cat-authors:        rgba(53, 228, 255, 0);
+
+  /* ── TAG GROUPS ── */
+  /* ACCESS — yellow/ochre */
+  --tag-access-base:  rgb(212, 196, 138);
+  --tag-access-1:     rgb(219, 193, 96);
+  --tag-access-2:     rgb(213, 191, 111);
+  --tag-access-3:     rgb(214, 192, 113);
+  --tag-access-4:     rgb(184, 168, 110);
+  --tag-access-5:     rgb(212, 196, 138);
+
+  /* LICENSE — sage green */
+  --tag-license-base: rgb(149, 192, 139);
+  --tag-license-1:    rgb(145, 189, 135);
+  --tag-license-2:    rgb(152, 194, 142);
+  --tag-license-3:    rgb(138, 183, 128);
+  --tag-license-4:    rgb(159, 198, 149);
+  --tag-license-5:    rgb(149, 192, 139);
+
+  /* EXPORT — orange/amber */
+  --tag-export-base:  rgb(255, 181, 95);
+  --tag-export-1:     rgb(255, 175, 80);
+  --tag-export-2:     rgb(255, 183, 100);
+  --tag-export-3:     rgb(255, 178, 88);
+  --tag-export-4:     rgb(240, 168, 80);
+  --tag-export-5:     rgb(255, 181, 95);
+
+  /* PLATFORM — rose/pink */
+  --tag-platform-base: rgb(255, 155, 175);
+  --tag-platform-1:    rgb(255, 148, 168);
+  --tag-platform-2:    rgb(255, 158, 178);
+  --tag-platform-3:    rgb(248, 145, 165);
+  --tag-platform-4:    rgb(255, 162, 182);
+  --tag-platform-5:    rgb(255, 155, 175);
+
+  /* TYPO — lavender/violet */
+  --tag-typo-base:    rgb(195, 168, 255);
+  --tag-typo-1:       rgb(190, 162, 252);
+  --tag-typo-2:       rgb(198, 172, 255);
+  --tag-typo-3:       rgb(185, 158, 248);
+  --tag-typo-4:       rgb(202, 177, 255);
+  --tag-typo-5:       rgb(195, 168, 255);
+
+  /* ROOTS — soft teal */
+  --tag-roots-base:   rgb(138, 210, 210);
+  --tag-roots-1:      rgb(132, 205, 205);
+  --tag-roots-2:      rgb(142, 213, 213);
+  --tag-roots-3:      rgb(128, 202, 202);
+  --tag-roots-4:      rgb(146, 216, 216);
+  --tag-roots-5:      rgb(138, 210, 210);
+
+  /* BROWSER — warm grey/beige */
+  --tag-browser-base: rgb(200, 195, 185);
+  --tag-browser-1:    rgb(195, 190, 180);
+  --tag-browser-2:    rgb(203, 198, 188);
+  --tag-browser-3:    rgb(190, 185, 175);
+  --tag-browser-4:    rgb(207, 202, 192);
+  --tag-browser-5:    rgb(200, 195, 185);
+
+  /* ── TYPOGRAPHY ── */
+  --font-display: "Nimbus Sans L", Arial, Helvetica, sans-serif;
+  --font-mono:    "Sometype Mono", "Courier New", monospace;
+
+  /* ── SPACING / RADII ── */
+  --radius-tag:    1px;
+  --radius-card:   2px;
+  --radius-footer: 1px;
+  --gap-column:    7.2px;
+  --col-width:     378px;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+/* ── RESET ── */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html, body {
+  background: var(--bg);
+  color: var(--ink-on-dark);
+  font-family: var(--font-display);
+  font-weight: 700;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  min-height: 100vh;
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
-}
+/* Utility: hide scrollbar but keep scroll */
+.hide-scrollbar::-webkit-scrollbar { display: none; }
+.hide-scrollbar { scrollbar-width: none; }
