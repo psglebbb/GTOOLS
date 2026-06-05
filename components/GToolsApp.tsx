@@ -74,9 +74,6 @@ export function GToolsApp({ news, tools }: Props) {
   const isDesktop = useIsDesktop();
   const isPhoneLandscape = useIsPhoneLandscape();
 
-  // Switching big category clears the active filter (one filter context per category).
-  useEffect(() => { setSelectedTags([]); }, [activeCategory]);
-
   // Close the footer Info on any scroll. Capture phase catches both the window
   // scroll (mobile) and the inner-column scroll (desktop).
   useEffect(() => {
@@ -92,6 +89,17 @@ export function GToolsApp({ news, tools }: Props) {
         ? prev.filter((s) => chipKey(s) !== chipKey(chip))
         : [...prev, chip]
     );
+
+  // Open a category. Switching context resets the active filter…
+  const selectCategory = (catId: string) => {
+    setActiveCategory(catId);
+    setSelectedTags([]);
+  };
+  // …unless the user opened it by clicking a specific tag — then preselect it.
+  const selectCategoryWithTag = (catId: string, chip: FilterChip) => {
+    setActiveCategory(catId);
+    setSelectedTags([chip]);
+  };
 
   // ── Mobile: horizontal swipe switches category (left → next, right → prev) ──
   const touchStart = useRef<{ x: number; y: number } | null>(null);
@@ -111,7 +119,7 @@ export function GToolsApp({ news, tools }: Props) {
     const idx = CATEGORIES.findIndex((c) => c.id === activeCategory);
     const next = dx < 0 ? idx + 1 : idx - 1;
     if (next < 0 || next >= CATEGORIES.length) return;
-    setActiveCategory(CATEGORIES[next].id);
+    selectCategory(CATEGORIES[next].id);
     window.scrollTo({ top: 0 });
   };
 
@@ -126,7 +134,8 @@ export function GToolsApp({ news, tools }: Props) {
         news={news}
         tools={tools}
         activeCategory={activeCategory}
-        onSelectCategory={setActiveCategory}
+        onSelectCategory={selectCategory}
+        onSelectCategoryWithTag={selectCategoryWithTag}
         selectedTags={selectedTags}
         onToggleTag={toggleTag}
         footerMode={footerMode}
@@ -170,7 +179,7 @@ export function GToolsApp({ news, tools }: Props) {
         <ClosedMenu
           categories={CATEGORIES}
           activeId={activeCategory}
-          onSelect={setActiveCategory}
+          onSelect={selectCategory}
         />
         <FilterBar
           activeCategory={activeCategory}

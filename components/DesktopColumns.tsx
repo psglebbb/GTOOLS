@@ -16,6 +16,7 @@ interface Props {
   tools: any[];
   activeCategory: string;
   onSelectCategory: (id: string) => void;
+  onSelectCategoryWithTag: (id: string, chip: FilterChip) => void;
   selectedTags: FilterChip[];
   onToggleTag: (chip: FilterChip) => void;
   footerMode: "closed" | "info";
@@ -25,7 +26,7 @@ interface Props {
 }
 
 export function DesktopColumns({
-  news, tools, activeCategory, onSelectCategory, selectedTags, onToggleTag,
+  news, tools, activeCategory, onSelectCategory, onSelectCategoryWithTag, selectedTags, onToggleTag,
   footerMode, lang, onFooterTab, onLangChange,
 }: Props) {
   const stripRef = useRef<HTMLDivElement>(null);
@@ -33,6 +34,12 @@ export function DesktopColumns({
   // Activate a category: make it the viewing column + scroll the strip home.
   function activate(catId: string) {
     onSelectCategory(catId);
+    stripRef.current?.scrollTo({ left: 0, behavior: "smooth" });
+  }
+
+  // Open a category via one of its tags: preselect that tag in the filter bar.
+  function activateWithTag(catId: string, chip: FilterChip) {
+    onSelectCategoryWithTag(catId, chip);
     stripRef.current?.scrollTo({ left: 0, behavior: "smooth" });
   }
 
@@ -109,7 +116,18 @@ export function DesktopColumns({
               <Tag group="Category" value={cat.label} color={cat.color} outline={cat.outline} width="100%" minHeight={38} valueCase="upper" />
               <div style={{ display: "flex", flexDirection: "column", gap: "var(--gap-row)", alignItems: "flex-start" }}>
                 {tags.map((t, i) => (
-                  <Tag key={i} group={t.group} value={t.value} color={colorForTag(t.value, t.color)} width="fit-content" minHeight={38} multiline valueCase={t.group === "AUTHOR" ? undefined : "title"} />
+                  <div
+                    key={i}
+                    style={{ cursor: "pointer" }}
+                    onClick={(e) => {
+                      e.stopPropagation(); // don't also trigger the column's plain activate
+                      // Author staples just open the All-Authors view (no tag filter there).
+                      if (cat.id === "authors") { activate(cat.id); return; }
+                      activateWithTag(cat.id, { group: t.group, value: t.value, color: t.color });
+                    }}
+                  >
+                    <Tag group={t.group} value={t.value} color={colorForTag(t.value, t.color)} width="fit-content" minHeight={38} multiline valueCase={t.group === "AUTHOR" ? undefined : "title"} />
+                  </div>
                 ))}
               </div>
             </div>
