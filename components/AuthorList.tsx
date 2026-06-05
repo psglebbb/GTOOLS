@@ -10,7 +10,7 @@ export function AuthorList({ authors }: { authors: string[] }) {
   }
 
   return (
-    <div style={{ display: "flex", flexWrap: "wrap", gap: 4 }}>
+    <div style={{ display: "flex", flexWrap: "wrap", gap: "var(--gap-row)" }}>
       {authors.map((name) => (
         <Tag key={name} group="Author" value={name} color="var(--surface)" />
       ))}

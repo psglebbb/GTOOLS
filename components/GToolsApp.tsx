@@ -1,62 +1,69 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Logo } from "./Logo";
 import { ClosedMenu } from "./ClosedMenu";
 import { FilterBar } from "./FilterBar";
-import { NewsBlock } from "./NewsBlock";
-import { ToolBlock } from "./ToolBlock";
-import { AuthorList } from "./AuthorList";
+import { CategoryBody } from "./CategoryBody";
 import { Footer } from "./Footer";
-
-const CATEGORIES = [
-  { id: "news",    label: "NEWS",                color: "var(--cat-news)" },
-  { id: "alt",     label: "Alternative Software", color: "var(--cat-alt-software)" },
-  { id: "fonts",   label: "FONTS",               color: "var(--cat-fonts)" },
-  { id: "small",   label: "SMALL-TECH",          color: "var(--cat-small-tech)" },
-  { id: "big",     label: "BIG-TECH",            color: "var(--cat-big-tech)" },
-  { id: "web",     label: "WEB",                 color: "var(--cat-web)" },
-  { id: "authors", label: "ALL AUTHORS",         color: "transparent", outline: true },
-];
+import { DesktopColumns } from "./DesktopColumns";
+import { CATEGORIES } from "./gtoolsData";
+import { chipKey, type FilterChip } from "./FilterBar";
 
 interface Props {
   news: any[];
   tools: any[];
 }
 
+// Switches to the desktop horizontal-column layout at >= 700px.
+function useIsDesktop() {
+  // Default false so SSR + first client render agree (mobile-first, no hydration mismatch).
+  const [isDesktop, setIsDesktop] = useState(false);
+  useEffect(() => {
+    const mq = window.matchMedia("(min-width: 700px)");
+    const update = () => setIsDesktop(mq.matches);
+    update();
+    mq.addEventListener("change", update);
+    return () => mq.removeEventListener("change", update);
+  }, []);
+  return isDesktop;
+}
+
 export function GToolsApp({ news, tools }: Props) {
   const [activeCategory, setActiveCategory] = useState("news");
   const [footerMode, setFooterMode] = useState<"closed" | "info">("closed");
   const [lang, setLang] = useState<"EN" | "DE">("EN");
+  const [selectedTags, setSelectedTags] = useState<FilterChip[]>([]);
+  const isDesktop = useIsDesktop();
 
-  const newsEntry = news[0] ?? null;
-  const toolsForCategory = (catId: string) =>
-    tools.filter((t) => t.category === catId);
+  // Switching big category clears the active filter (one filter context per category).
+  useEffect(() => { setSelectedTags([]); }, [activeCategory]);
 
-  const allAuthors = Array.from(
-    new Set(tools.map((t) => t.author?.name).filter(Boolean))
-  );
+  const toggleTag = (chip: FilterChip) =>
+    setSelectedTags((prev) =>
+      prev.some((s) => chipKey(s) === chipKey(chip))
+        ? prev.filter((s) => chipKey(s) !== chipKey(chip))
+        : [...prev, chip]
+    );
 
-  function renderBody() {
-    if (activeCategory === "news") {
-      return newsEntry ? <NewsBlock entry={newsEntry} /> : <EmptyState label="No news yet." />;
-    }
-    if (activeCategory === "authors") {
-      return <AuthorList authors={allAuthors} />;
-    }
-    const categoryTools = toolsForCategory(activeCategory);
-    if (!categoryTools.length) return <EmptyState label="No entries yet." />;
+  if (isDesktop) {
     return (
-      <div style={{ display: "flex", flexDirection: "column", gap: "var(--gap-column)" }}>
-        {categoryTools.map((tool) => (
-          <ToolBlock key={tool._id} entry={tool} />
-        ))}
-      </div>
+      <DesktopColumns
+        news={news}
+        tools={tools}
+        activeCategory={activeCategory}
+        onSelectCategory={setActiveCategory}
+        selectedTags={selectedTags}
+        onToggleTag={toggleTag}
+        footerMode={footerMode}
+        lang={lang}
+        onFooterTab={setFooterMode}
+        onLangChange={setLang}
+      />
     );
   }
 
-  const activeCat = CATEGORIES.find((c) => c.id === activeCategory);
-
+  // ── Mobile: single fixed-width viewing column ──
   return (
     <div
       style={{
@@ -77,7 +84,7 @@ export function GToolsApp({ news, tools }: Props) {
           background: "var(--bg)",
           width: "min(var(--col-width), 100vw)",
           padding: "0 6px",
-          paddingTop: 12,
+          paddingTop: 5,
           display: "flex",
           flexDirection: "column",
           gap: "var(--gap-column)",
@@ -89,7 +96,13 @@ export function GToolsApp({ news, tools }: Props) {
           activeId={activeCategory}
           onSelect={setActiveCategory}
         />
-        <FilterBar activeCategory={activeCategory} tools={tools} news={news} />
+        <FilterBar
+          activeCategory={activeCategory}
+          tools={tools}
+          news={news}
+          selected={selectedTags}
+          onToggle={toggleTag}
+        />
       </div>
 
       {/* Scrollable body */}
@@ -106,7 +119,7 @@ export function GToolsApp({ news, tools }: Props) {
           if (footerMode === "info") setFooterMode("closed");
         }}
       >
-        {renderBody()}
+        <CategoryBody activeCategory={activeCategory} news={news} tools={tools} selectedTags={selectedTags} />
       </div>
 
       {/* Fixed footer */}
@@ -127,23 +140,6 @@ export function GToolsApp({ news, tools }: Props) {
           onLangChange={setLang}
         />
       </div>
-    </div>
-  );
-}
-
-function EmptyState({ label }: { label: string }) {
-  return (
-    <div
-      style={{
-        fontFamily: "var(--font-mono)",
-        fontSize: 9,
-        letterSpacing: "0.07em",
-        textTransform: "uppercase",
-        color: "rgba(195,195,195,0.45)",
-        padding: "24px 0",
-      }}
-    >
-      {label}
     </div>
   );
 }

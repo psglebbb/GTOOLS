@@ -1,37 +1,55 @@
 import { Tag } from "./Tag";
+import { colorForTag } from "./tagColors";
 
 export function ToolBlock({ entry }: { entry: any }) {
   // Format URL as the big WWW. display
   const displayUrl = formatUrl(entry.url ?? "");
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: "var(--gap-column)" }}>
-      {/* Author */}
-      <Tag group="Author:" value={entry.author?.name ?? "—"} color="var(--surface)" width="100%" />
+    <div style={{ display: "flex", flexDirection: "column", gap: "var(--gap-section)" }}>
+      {/* Edited stamp — always before the tool */}
+      {entry.editedAt && (
+        <span style={{ fontFamily: "var(--font-mono)", fontWeight: 700, fontSize: 9, letterSpacing: "0.07em", textTransform: "uppercase", color: "rgba(195,195,195,0.55)" }}>
+          Edited on {formatDate(entry.editedAt)}
+        </span>
+      )}
 
-      {/* Big red URL display */}
+      {/* Author — transparent plate, quiet grey type */}
+      <Tag
+        group="Author:"
+        value={entry.author?.name ?? "—"}
+        color="transparent"
+        width="100%"
+        style={{ color: "var(--plate-quiet)" }}
+      />
+
+      {/* Big WWW. URL display — light grey, centred, uppercase */}
       <div
         style={{
           fontFamily: "var(--font-display)",
           fontWeight: 400,
-          fontSize: 36,
-          lineHeight: "36px",
+          fontSize: 54,
+          lineHeight: "50px",
           letterSpacing: "-0.04em",
           color: "var(--tool-link)",
+          textAlign: "center",
+          textTransform: "uppercase",
           whiteSpace: "pre-line",
-          wordBreak: "break-all",
+          wordBreak: "break-word",
+          padding: "8px 8px",
         }}
       >
         {displayUrl}
       </div>
 
-      {/* Function */}
+      {/* Function — transparent plate, quiet grey type */}
       {entry.functionValue && (
         <Tag
           group={entry.functionLabel ?? "Function:"}
           value={entry.functionValue}
-          color="var(--surface)"
+          color="transparent"
           width="100%"
+          style={{ color: "var(--plate-quiet)" }}
         />
       )}
 
@@ -46,30 +64,36 @@ export function ToolBlock({ entry }: { entry: any }) {
         </p>
       )}
 
-      {/* Tags */}
+      {/* Tags — keep their group colours */}
       {(entry.tags?.length ?? 0) > 0 && (
-        <div style={{ display: "flex", flexWrap: "wrap", gap: 4 }}>
+        <div style={{ display: "flex", flexWrap: "wrap", gap: "var(--gap-row)", marginTop: "var(--gap-divide)" }}>
           {entry.tags.map((tag: any, i: number) => (
-            <Tag key={i} group={tag.group} value={tag.value} color={tag.color ?? "var(--surface)"} />
+            <Tag key={i} group={tag.group} value={tag.value} color={colorForTag(tag.value, tag.color)} />
           ))}
         </div>
-      )}
-
-      {/* Edited stamp */}
-      {entry.editedAt && (
-        <span style={{ fontFamily: "var(--font-mono)", fontWeight: 700, fontSize: 9, letterSpacing: "0.07em", textTransform: "uppercase", color: "rgba(195,195,195,0.55)" }}>
-          Edited on {formatDate(entry.editedAt)}
-        </span>
       )}
     </div>
   );
 }
 
 function formatUrl(url: string): string {
-  // Strip protocol, split into display lines like the design
-  const clean = url.replace(/^https?:\/\//, "");
-  const parts = clean.split("/").filter(Boolean);
-  return ["WWW.", ...parts.map((p) => p.toUpperCase() + "/")].join("\n");
+  // Split into display lines like the design:
+  //   line 1: WWW.
+  //   line 2: the domain name WITH its trailing dot (e.g. INKSCAPE.)
+  //   line 3: the domain extension letters (e.g. ORG/)
+  //   line 4+: any path segments
+  const clean = url
+    .replace(/^https?:\/\//, "")
+    .replace(/^www\./, "")
+    .replace(/\/$/, "");
+  const [host = "", ...pathParts] = clean.split("/").filter(Boolean);
+  const lastDot = host.lastIndexOf(".");
+  const name = lastDot > 0 ? host.slice(0, lastDot + 1) : host; // keep the dot on line 2
+  const ext = lastDot > 0 ? host.slice(lastDot + 1) : "";
+
+  const lines = ["WWW.", name, ext + "/"];
+  for (const p of pathParts) lines.push(p + "/");
+  return lines.join("\n");
 }
 
 function formatDate(iso: string) {

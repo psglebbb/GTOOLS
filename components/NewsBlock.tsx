@@ -1,37 +1,52 @@
 import Image from "next/image";
 import { urlFor } from "@/sanity/lib/client";
 import { Tag } from "./Tag";
+import { colorForTag } from "./tagColors";
 
 export function NewsBlock({ entry }: { entry: any }) {
   const imageUrl = entry.featureImage
-    ? urlFor(entry.featureImage).width(756).url()
+    ? urlFor(entry.featureImage).width(840).url()
     : "/assets/news-feature.png";
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: "var(--gap-column)" }}>
-      {/* Author */}
-      <Tag group="Author:" value={entry.author?.name ?? "—"} color="var(--surface)" width="100%" />
+    <div style={{ display: "flex", flexDirection: "column", gap: "var(--gap-section)" }}>
+      {/* Edited stamp — always before the entry */}
+      {entry.editedAt && (
+        <span style={{ fontFamily: "var(--font-mono)", fontWeight: 700, fontSize: 9, letterSpacing: "0.07em", textTransform: "uppercase", color: "rgba(195,195,195,0.55)" }}>
+          Edited on {formatDate(entry.editedAt)}
+        </span>
+      )}
 
-      {/* Feature image */}
-      <div style={{ width: "100%", aspectRatio: "3/2", background: "#111", borderRadius: "var(--radius-card)", overflow: "hidden", position: "relative" }}>
+      {/* Author — transparent plate, quiet grey type */}
+      <Tag
+        group="Author:"
+        value={entry.author?.name ?? "—"}
+        color="transparent"
+        width="100%"
+        style={{ color: "var(--plate-quiet)" }}
+      />
+
+      {/* Feature image — width fixed, height variable, never cropped */}
+      <div style={{ width: "100%", aspectRatio: "3/2", background: "#111", borderRadius: "var(--radius-tag)", overflow: "hidden", position: "relative" }}>
         <Image
           src={imageUrl}
           alt={entry.title ?? "News feature"}
           fill
           style={{ objectFit: "contain" }}
-          sizes="378px"
+          sizes="(max-width: 700px) 378px, 420px"
         />
       </div>
 
-      {/* Function / Come by block */}
+      {/* Function / Come by block — transparent, quiet grey, multi-line */}
       {entry.functionValue && (
         <Tag
           group={entry.functionLabel ?? "Come by:"}
           value={entry.functionValue}
-          color="var(--surface)"
+          color="transparent"
           width="100%"
           multiline
           minHeight={80}
+          style={{ color: "var(--plate-quiet)" }}
         />
       )}
 
@@ -46,20 +61,13 @@ export function NewsBlock({ entry }: { entry: any }) {
         </p>
       )}
 
-      {/* Tags */}
+      {/* Tags — keep their group colours */}
       {(entry.tags?.length ?? 0) > 0 && (
-        <div style={{ display: "flex", flexWrap: "wrap", gap: 4 }}>
+        <div style={{ display: "flex", flexWrap: "wrap", gap: "var(--gap-row)", marginTop: "var(--gap-divide)" }}>
           {entry.tags.map((tag: any, i: number) => (
-            <Tag key={i} group={tag.group} value={tag.value} color={tag.color ?? "var(--tag-access-base)"} />
+            <Tag key={i} group={tag.group} value={tag.value} color={colorForTag(tag.value, tag.color)} />
           ))}
         </div>
-      )}
-
-      {/* Edited stamp */}
-      {entry.editedAt && (
-        <span style={{ fontFamily: "var(--font-mono)", fontWeight: 700, fontSize: 9, letterSpacing: "0.07em", textTransform: "uppercase", color: "rgba(195,195,195,0.55)" }}>
-          Edited on {formatDate(entry.editedAt)}
-        </span>
       )}
     </div>
   );

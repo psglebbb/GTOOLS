@@ -1,8 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { Tag } from "./Tag";
+import { colorForTag } from "./tagColors";
 
-// Default filter colour map by group
+// Default filter colour map by group (fallback when an entry tag has no colour)
 const GROUP_COLOR: Record<string, string> = {
   ACCESS:   "var(--tag-access-base)",
   LICENSE:  "var(--tag-license-base)",
@@ -15,25 +16,27 @@ const GROUP_COLOR: Record<string, string> = {
   AUTHOR:   "var(--surface)",
 };
 
-interface FilterChip { group: string; value: string; color?: string; }
+export interface FilterChip { group: string; value: string; color?: string; }
 interface Props {
   activeCategory: string;
   tools: any[];
   news: any[];
+  selected: FilterChip[];
+  onToggle: (chip: FilterChip) => void;
 }
 
+// Reality-driven: the filter bar shows only the tags actually present on the
+// entries currently published in the active category (de-duped, first-seen order).
 function getFilters(activeCategory: string, tools: any[], news: any[]): FilterChip[] {
-  if (activeCategory === "news") {
-    const entry = news[0];
-    return entry?.tags ?? [];
-  }
-  if (activeCategory === "authors") return [];
-  const categoryTools = tools.filter((t) => t.category === activeCategory);
-  // Collect unique group+value combos
+  let source: any[] = [];
+  if (activeCategory === "news") source = news;
+  else if (activeCategory === "authors") return [];
+  else source = tools.filter((t) => t.category === activeCategory);
+
   const seen = new Set<string>();
   const chips: FilterChip[] = [];
-  for (const tool of categoryTools) {
-    for (const tag of tool.tags ?? []) {
+  for (const entry of source) {
+    for (const tag of entry.tags ?? []) {
       const key = `${tag.group}:${tag.value}`;
       if (!seen.has(key)) { seen.add(key); chips.push(tag); }
     }
@@ -41,51 +44,57 @@ function getFilters(activeCategory: string, tools: any[], news: any[]): FilterCh
   return chips;
 }
 
-export function FilterBar({ activeCategory, tools, news }: Props) {
-  const [focusedIdx, setFocusedIdx] = useState<number | null>(null);
-  const chips = getFilters(activeCategory, tools, news);
+export const chipKey = (c: FilterChip) => `${c.group}|${c.value}`;
 
+export function FilterBar({ activeCategory, tools, news, selected, onToggle }: Props) {
+  const chips = getFilters(activeCategory, tools, news);
   if (!chips.length) return null;
 
+  const isSelected = (c: FilterChip) => selected.some((s) => chipKey(s) === chipKey(c));
+
   return (
-    <div
-      className="hide-scrollbar"
-      style={{
-        display: "flex",
-        gap: 4,
-        overflowX: "auto",
-        padding: "0 0 2px",
-      }}
-    >
-      {chips.map((chip, i) => {
-        const isActive = focusedIdx === null || focusedIdx === i;
-        const bg = chip.color ?? GROUP_COLOR[chip.group] ?? "var(--surface)";
-        return (
-          <div
-            key={`${chip.group}-${chip.value}`}
-            onClick={() => setFocusedIdx(focusedIdx === i ? null : i)}
-            style={{
-              flexShrink: 0,
-              borderRadius: 2,
-              background: bg,
-              padding: "3px 10px 3px 6px",
-              display: "flex",
-              flexDirection: "column",
-              gap: 2,
-              opacity: isActive ? 1 : 0.35,
-              transition: "opacity 180ms linear",
-              cursor: "pointer",
-            }}
-          >
-            <span style={{ fontFamily: "var(--font-mono)", fontWeight: 700, fontSize: 8, letterSpacing: "0.07em", textTransform: "uppercase", color: "rgb(2,2,2)", whiteSpace: "nowrap" }}>
-              {chip.group}
-            </span>
-            <span style={{ fontFamily: "var(--font-display)", fontWeight: 700, fontSize: 13, lineHeight: "14px", letterSpacing: "-0.05em", color: "rgb(2,2,2)", whiteSpace: "nowrap" }}>
-              {chip.value}
-            </span>
-          </div>
-        );
-      })}
+    <div style={{ display: "flex", flexDirection: "column", gap: 2 }}>
+      {/* Horizontal-scroll chip strip */}
+      <div
+        className="hide-scrollbar"
+        style={{ display: "flex", gap: 2, overflowX: "auto", alignItems: "center" }}
+      >
+        {chips.map((chip) => {
+          const sel = isSelected(chip);
+          const bg = colorForTag(chip.value, chip.color ?? GROUP_COLOR[chip.group]);
+          return (
+            <div
+              key={chipKey(chip)}
+              onClick={() => onToggle(chip)}
+              style={{
+                flexShrink: 0,
+                opacity: sel ? 0.35 : 1,
+                transition: "opacity 120ms linear",
+                cursor: "pointer",
+              }}
+            >
+              <Tag group={chip.group} value={chip.value} color={bg} />
+            </div>
+          );
+        })}
+      </div>
+
+      {/* Selected staple — red plate, white type, left-aligned, ragged right */}
+      {selected.length > 0 && (
+        <div style={{ display: "flex", flexDirection: "column", gap: 2, alignItems: "flex-start" }}>
+          {selected.map((chip) => (
+            <Tag
+              key={chipKey(chip)}
+              group={chip.group}
+              value={chip.value}
+              color="#FF0000"
+              width="fit-content"
+              style={{ color: "#FFFFFF" }}
+              onClick={() => onToggle(chip)}
+            />
+          ))}
+        </div>
+      )}
     </div>
   );
 }

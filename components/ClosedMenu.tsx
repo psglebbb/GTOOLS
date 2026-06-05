@@ -13,9 +13,11 @@ interface Props {
   categories: Category[];
   activeId: string;
   onSelect: (id: string) => void;
+  rowH?: number;
+  overlap?: number;
 }
 
-export function ClosedMenu({ categories, activeId, onSelect }: Props) {
+export function ClosedMenu({ categories, activeId, onSelect, rowH = 34.2, overlap = 26 }: Props) {
   const [open, setOpen] = useState(false);
 
   const ordered = (() => {
@@ -45,16 +47,16 @@ export function ClosedMenu({ categories, activeId, onSelect }: Props) {
             }}
             style={{
               position: "relative",
-              height: 34.2,
+              height: rowH,
               borderRadius: 1,
-              padding: "4px 18px 4px 8px",
+              padding: "4px 24px 4px 8px",
               boxSizing: "border-box",
               background: c.outline ? "#000" : c.color,
               color: c.outline ? "rgb(195,195,195)" : "rgb(2,2,2)",
               display: "flex",
               flexDirection: "column",
               justifyContent: "space-between",
-              marginTop: isTop ? 0 : open ? 2 : -26,
+              marginTop: isTop ? 0 : open ? 2 : -overlap,
               transition: "margin-top 380ms cubic-bezier(.22,.61,.36,1)",
               zIndex: z,
               willChange: "margin-top",

@@ -2,6 +2,7 @@
    GTOOLS — Graphic Tools Museum
    Global styles + design tokens
    Source of truth: colors_and_type.css from the GTOOLS Design System
+   (GTOOLS STYLES_TAGS_DESIGN.fig + GTOOLS _MENU.fig)
    ============================================================ */
 
 @font-face {
@@ -22,6 +23,7 @@
   font-family: "Sometype Mono";
   font-style: normal;
   font-weight: 400;
+  /* Regular file wasn't shipped; Medium stands in until the user provides it. */
   src: url("/fonts/SometypeMono-Medium.otf") format("opentype");
   font-display: swap;
 }
@@ -41,26 +43,27 @@
 }
 
 :root {
-  /* ── STAGE ── */
+  /* ── STAGE ── The site sits on solid black; plates float on top. */
   --bg:               rgb(0, 0, 0);
-  --surface:          rgb(195, 195, 195);
-  --surface-soft:     rgba(195, 195, 195, 0.7647);
-  --ink:              rgb(2, 2, 2);
-  --ink-on-dark:      rgb(195, 195, 195);
+  --surface:          rgb(195, 195, 195);          /* default tag / column / footer plate */
+  --surface-soft:     rgba(195, 195, 195, 0.7647); /* Property1Default tag plate */
+  --ink:              rgb(2, 2, 2);                /* near-black, used on plates */
+  --ink-on-dark:      rgb(195, 195, 195);          /* light grey body text on black */
   --ink-quiet:        rgb(195, 195, 195);
-  --accent-purple:    rgb(79, 4, 200);
-  --tool-link:        rgb(195, 195, 195);
+  --accent-purple:    rgb(79, 4, 200);             /* the ONE hot accent — footer copy, active tab */
+  --tool-link:        rgb(195, 195, 195);          /* big WWW. URL display — light grey on black (#C3C3C3) */
+  --plate-quiet:      rgb(195, 195, 195);          /* AUTHOR/FUNCTION/COME BY text inside entries (#C3C3C3) */
 
-  /* ── CATEGORY COLOURS ── */
-  --cat-web:            rgb(224, 255, 163);
-  --cat-news:           rgb(255, 234, 0);
-  --cat-alt-software:   rgb(13, 255, 0);
-  --cat-fonts:          rgb(255, 53, 255);
-  --cat-small-tech:     rgb(53, 161, 255);
-  --cat-big-tech:       rgb(255, 53, 53);
-  --cat-authors:        rgba(53, 228, 255, 0);
+  /* ── CATEGORY COLOURS (the 7 column hues) ── */
+  --cat-web:            rgb(224, 255, 163);    /* pale citron */
+  --cat-news:           rgb(255, 234, 0);      /* signal yellow */
+  --cat-alt-software:   rgb(13, 255, 0);       /* phosphor green */
+  --cat-fonts:          rgb(255, 53, 255);     /* magenta */
+  --cat-small-tech:     rgb(53, 161, 255);     /* electric blue */
+  --cat-big-tech:       rgb(255, 53, 53);      /* warning red */
+  --cat-authors:        rgba(53, 228, 255, 0); /* transparent — black plate */
 
-  /* ── TAG GROUPS ── */
+  /* ── TAG GROUPS ── each group has multiple tones (tags are templates). ── */
   /* ACCESS — yellow/ochre */
   --tag-access-base:  rgb(212, 196, 138);
   --tag-access-1:     rgb(219, 193, 96);
@@ -69,64 +72,89 @@
   --tag-access-4:     rgb(184, 168, 110);
   --tag-access-5:     rgb(212, 196, 138);
 
-  /* LICENSE — sage green */
-  --tag-license-base: rgb(149, 192, 139);
-  --tag-license-1:    rgb(145, 189, 135);
-  --tag-license-2:    rgb(152, 194, 142);
-  --tag-license-3:    rgb(138, 183, 128);
-  --tag-license-4:    rgb(159, 198, 149);
-  --tag-license-5:    rgb(149, 192, 139);
+  /* LICENSE — desaturated blue/slate */
+  --tag-license-base: rgb(143, 168, 184);
+  --tag-license-1:    rgb(113, 150, 172);
+  --tag-license-2:    rgb(126, 154, 170);
+  --tag-license-3:    rgb(143, 168, 184);
 
-  /* EXPORT — orange/amber */
-  --tag-export-base:  rgb(255, 181, 95);
-  --tag-export-1:     rgb(255, 175, 80);
-  --tag-export-2:     rgb(255, 183, 100);
-  --tag-export-3:     rgb(255, 178, 88);
-  --tag-export-4:     rgb(240, 168, 80);
-  --tag-export-5:     rgb(255, 181, 95);
+  /* PLATFORM — beige / camel */
+  --tag-platform-base: rgb(168, 158, 144);
+  --tag-platform-1:    rgb(191, 176, 122);
+  --tag-platform-2:    rgb(169, 154, 98);
+  --tag-platform-3:    rgb(195, 177, 151);
+  --tag-platform-4:    rgb(224, 206, 180);
+  --tag-platform-5:    rgb(198, 170, 130);
+  --tag-platform-6:    rgb(224, 166, 82);
+  --tag-platform-7:    rgb(209, 155, 77);
+  --tag-platform-8:    rgb(201, 160, 102);
 
-  /* PLATFORM — rose/pink */
-  --tag-platform-base: rgb(255, 155, 175);
-  --tag-platform-1:    rgb(255, 148, 168);
-  --tag-platform-2:    rgb(255, 158, 178);
-  --tag-platform-3:    rgb(248, 145, 165);
-  --tag-platform-4:    rgb(255, 162, 182);
-  --tag-platform-5:    rgb(255, 155, 175);
+  /* EXPORT — leaf green */
+  --tag-export-base:  rgb(105, 164, 105);
+  --tag-export-1:     rgb(114, 161, 114);
+  --tag-export-2:     rgb(60, 171, 60);
+  --tag-export-3:     rgb(135, 214, 135);
+  --tag-export-4:     rgb(141, 193, 141);
+  --tag-export-5:     rgb(162, 222, 162);
+  --tag-export-6:     rgb(107, 204, 107);
+  --tag-export-7:     rgb(71, 185, 71);
+  --tag-export-8:     rgb(101, 186, 101);
 
-  /* TYPO — lavender/violet */
-  --tag-typo-base:    rgb(195, 168, 255);
-  --tag-typo-1:       rgb(190, 162, 252);
-  --tag-typo-2:       rgb(198, 172, 255);
-  --tag-typo-3:       rgb(185, 158, 248);
-  --tag-typo-4:       rgb(202, 177, 255);
-  --tag-typo-5:       rgb(195, 168, 255);
+  /* TYPO — pink */
+  --tag-typo-base:    rgb(232, 168, 200);
+  --tag-typo-1:       rgb(232, 168, 200);
+  --tag-typo-2:       rgb(212, 144, 176);
+  --tag-typo-3:       rgb(245, 192, 220);
 
-  /* ROOTS — soft teal */
-  --tag-roots-base:   rgb(138, 210, 210);
-  --tag-roots-1:      rgb(132, 205, 205);
-  --tag-roots-2:      rgb(142, 213, 213);
-  --tag-roots-3:      rgb(128, 202, 202);
-  --tag-roots-4:      rgb(146, 216, 216);
-  --tag-roots-5:      rgb(138, 210, 210);
+  /* ROOTS — lavender / purple */
+  --tag-roots-base:   rgb(154, 148, 184);
+  --tag-roots-1:      rgb(154, 148, 184);
+  --tag-roots-2:      rgb(130, 122, 170);
 
-  /* BROWSER — warm grey/beige */
-  --tag-browser-base: rgb(200, 195, 185);
-  --tag-browser-1:    rgb(195, 190, 180);
-  --tag-browser-2:    rgb(203, 198, 188);
-  --tag-browser-3:    rgb(190, 185, 175);
-  --tag-browser-4:    rgb(207, 202, 192);
-  --tag-browser-5:    rgb(200, 195, 185);
+  /* BROWSER — cyan / teal */
+  --tag-browser-base: rgb(122, 168, 168);
+  --tag-browser-1:    rgb(122, 168, 168);
+  --tag-browser-2:    rgb(140, 188, 188);
 
   /* ── TYPOGRAPHY ── */
-  --font-display: "Nimbus Sans L", Arial, Helvetica, sans-serif;
-  --font-mono:    "Sometype Mono", "Courier New", monospace;
+  --font-display: "Nimbus Sans L", "Helvetica Neue", Arial, Helvetica, sans-serif;
+  --font-mono:    "Sometype Mono", ui-monospace, "Courier New", monospace;
 
-  /* ── SPACING / RADII ── */
+  /* Size scale (px, design tokens — match Figma 1:1) */
+  --t-logo-desktop:   72px;
+  --t-logo-mobile:    64.8px;
+  --t-link-desktop:   60px;
+  --t-link-mobile:    54px;
+  --t-name:           16px;
+  --t-name-sm:        14.4px;
+  --t-body:           10px;
+  --t-label:          9px;
+  --t-label-xs:       8.1px;
+
+  /* Tracking */
+  --tr-display:       -0.040em;   /* huge type (logo + tool link) */
+  --tr-name:          -0.050em;   /* bold row text */
+  --tr-label:         0.070em;    /* mono micro-labels (loose) */
+  --tr-body:          0.010em;
+
+  /* ── SPACING / RADII / LAYOUT ── */
   --radius-tag:    1px;
   --radius-card:   2px;
   --radius-footer: 1px;
-  --gap-column:    7.2px;
-  --col-width:     378px;
+  --radius-bar:    2px;
+  /* One uniform gap everywhere: categories, filter, tags, block sections.
+     The brand's "stapled plate" rhythm — all in-between spaces are equal. */
+  --gap-row:       2px;        /* row gap inside a tag strip */
+  --gap-column:    2px;        /* gap between block sections (mobile) */
+  --gap-block:     2px;        /* gap between block sections (desktop) */
+  --gap-section:   8px;        /* breathing room between sections inside a tool/news block */
+  --gap-divide:    12px;       /* deliberate divider — separates body text from the tag row */
+  --gap-tools:     40px;       /* feed-like separation between distinct tool blocks (readability) */
+  --col-width:     378px;      /* viewing column on mobile */
+  --col-desktop:   420px;      /* one column on desktop */
+  --viewport-mobile: 390px;    /* mobile screen */
+  --tag-h:         38px;       /* desktop tag height */
+  --tag-h-mobile:  34.2px;     /* mobile tag height */
 }
 
 /* ── RESET ── */
