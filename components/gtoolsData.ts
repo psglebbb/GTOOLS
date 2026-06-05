@@ -27,9 +27,9 @@ export function colorForCategory(catId: string): string {
 
 export interface TagLike { group: string; value: string; color?: string; }
 
-// The entries currently published for a given category.
-export function entriesForCategory(catId: string, tools: any[], news: any[]): any[] {
-  if (catId === "news") return news;
+// The entries currently published for a given category. Every category (News
+// included) is a slice of the unified `tools` boxes; Authors has its own view.
+export function entriesForCategory(catId: string, tools: any[], _news: any[]): any[] {
   if (catId === "authors") return [];
   return tools.filter((t) => t.category === catId);
 }

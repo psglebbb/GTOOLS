@@ -1,5 +1,4 @@
-import { NewsBlock } from "./NewsBlock";
-import { ToolBlock } from "./ToolBlock";
+import { Box } from "./Box";
 import { AuthorList } from "./AuthorList";
 import { authorsList } from "./gtoolsData";
 import type { FilterChip } from "./FilterBar";
@@ -20,29 +19,25 @@ function matchesAllTags(entry: any, selected: FilterChip[]): boolean {
 }
 
 // The live block for a category — shared between the mobile single column and
-// the desktop viewing column.
+// the desktop viewing column. Every big category (including News) is a filtered
+// list of unified boxes; Authors is the one special view.
 export function CategoryBody({ activeCategory, news, tools, selectedTags = [] }: Props) {
-  if (activeCategory === "news") {
-    const entry = news[0] ?? null;
-    return entry ? <NewsBlock entry={entry} /> : <EmptyState label="No news yet." />;
-  }
-
   if (activeCategory === "authors") {
     return <AuthorList authors={authorsList(tools, news)} />;
   }
 
-  const categoryTools = tools.filter((t) => t.category === activeCategory);
-  const visibleTools = selectedTags.length
-    ? categoryTools.filter((t) => matchesAllTags(t, selectedTags))
-    : categoryTools;
+  const categoryBoxes = tools.filter((t) => t.category === activeCategory);
+  const visible = selectedTags.length
+    ? categoryBoxes.filter((t) => matchesAllTags(t, selectedTags))
+    : categoryBoxes;
 
-  if (!categoryTools.length) return <EmptyState label="No entries yet." />;
-  if (!visibleTools.length) return <EmptyState label="No tools match this filter." />;
+  if (!categoryBoxes.length) return <EmptyState label="No entries yet." />;
+  if (!visible.length) return <EmptyState label="Nothing matches this filter." />;
 
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: "var(--gap-tools)" }}>
-      {visibleTools.map((tool) => (
-        <ToolBlock key={tool._id} entry={tool} />
+      {visible.map((entry) => (
+        <Box key={entry._id} entry={entry} />
       ))}
     </div>
   );

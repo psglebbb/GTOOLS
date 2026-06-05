@@ -1,6 +1,8 @@
 import { defineField, defineType } from "sanity";
 
+// Big categories a box can live in. "news" is just one of them.
 const CATEGORIES = [
+  { title: "NEWS", value: "news" },
   { title: "Alternative Software", value: "alt" },
   { title: "FONTS", value: "fonts" },
   { title: "SMALL-TECH", value: "small" },
@@ -8,14 +10,22 @@ const CATEGORIES = [
   { title: "WEB", value: "web" },
 ];
 
+// How the box renders: a title link, a picture, or a picture with the title
+// overlaid in difference blend mode.
+const DISPLAY_MODES = [
+  { title: "Title / URL", value: "title" },
+  { title: "Picture", value: "picture" },
+  { title: "Picture + Title (difference)", value: "pictureTitle" },
+];
+
 export const toolSchema = defineType({
   name: "tool",
-  title: "Tool",
+  title: "Box (Tool / News)",
   type: "document",
   fields: [
     defineField({
       name: "title",
-      title: "Tool Name",
+      title: "Name",
       type: "string",
       validation: (Rule) => Rule.required(),
     }),
@@ -27,17 +37,45 @@ export const toolSchema = defineType({
       validation: (Rule) => Rule.required(),
     }),
     defineField({
-      name: "url",
-      title: "URL",
-      type: "url",
-      validation: (Rule) => Rule.required(),
-    }),
-    defineField({
       name: "category",
-      title: "Category",
+      title: "Big Category",
       type: "string",
       options: { list: CATEGORIES, layout: "radio" },
       validation: (Rule) => Rule.required(),
+    }),
+    defineField({
+      name: "displayMode",
+      title: "Display",
+      type: "string",
+      description: "How this box shows up in its column.",
+      options: { list: DISPLAY_MODES, layout: "radio" },
+      initialValue: "title",
+      validation: (Rule) => Rule.required(),
+    }),
+    defineField({
+      name: "url",
+      title: "URL (title link)",
+      type: "url",
+      hidden: ({ parent }) => parent?.displayMode === "picture",
+      validation: (Rule) =>
+        Rule.custom((value, context) => {
+          const mode = (context.parent as { displayMode?: string })?.displayMode;
+          if (mode !== "picture" && !value) return "URL is required for title display modes";
+          return true;
+        }),
+    }),
+    defineField({
+      name: "featureImage",
+      title: "Picture",
+      type: "image",
+      options: { hotspot: true },
+      hidden: ({ parent }) => parent?.displayMode === "title",
+      validation: (Rule) =>
+        Rule.custom((value, context) => {
+          const mode = (context.parent as { displayMode?: string })?.displayMode;
+          if (mode !== "title" && !value) return "Picture is required for picture display modes";
+          return true;
+        }),
     }),
     defineField({
       name: "authors",
@@ -64,15 +102,14 @@ export const toolSchema = defineType({
     defineField({
       name: "functionValue",
       title: "Function",
-      type: "string",
-      validation: (Rule) => Rule.required(),
+      type: "text",
+      rows: 3,
     }),
     defineField({
       name: "description",
       title: "Description",
       type: "text",
       rows: 4,
-      validation: (Rule) => Rule.required(),
     }),
     defineField({
       name: "tags",
@@ -88,6 +125,6 @@ export const toolSchema = defineType({
     }),
   ],
   preview: {
-    select: { title: "title", subtitle: "category" },
+    select: { title: "title", subtitle: "category", media: "featureImage" },
   },
 });

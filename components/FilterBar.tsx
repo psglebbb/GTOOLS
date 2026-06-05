@@ -27,11 +27,9 @@ interface Props {
 
 // Reality-driven: the filter bar shows only the tags actually present on the
 // entries currently published in the active category (de-duped, first-seen order).
-function getFilters(activeCategory: string, tools: any[], news: any[]): FilterChip[] {
-  let source: any[] = [];
-  if (activeCategory === "news") source = news;
-  else if (activeCategory === "authors") return [];
-  else source = tools.filter((t) => t.category === activeCategory);
+function getFilters(activeCategory: string, tools: any[], _news: any[]): FilterChip[] {
+  if (activeCategory === "authors") return [];
+  const source: any[] = tools.filter((t) => t.category === activeCategory);
 
   const seen = new Set<string>();
   const chips: FilterChip[] = [];

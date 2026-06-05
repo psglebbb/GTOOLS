@@ -8,6 +8,8 @@ export const ALL_TOOLS_QUERY = `
     slug,
     url,
     category,
+    displayMode,
+    featureImage,
     "authors": coalesce(authors[]-> { name }, [author-> { name }]),
     functionLabel,
     functionValue,
