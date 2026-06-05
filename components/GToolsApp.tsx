@@ -77,6 +77,15 @@ export function GToolsApp({ news, tools }: Props) {
   // Switching big category clears the active filter (one filter context per category).
   useEffect(() => { setSelectedTags([]); }, [activeCategory]);
 
+  // Close the footer Info on any scroll. Capture phase catches both the window
+  // scroll (mobile) and the inner-column scroll (desktop).
+  useEffect(() => {
+    if (footerMode !== "info") return;
+    const close = () => setFooterMode("closed");
+    window.addEventListener("scroll", close, true);
+    return () => window.removeEventListener("scroll", close, true);
+  }, [footerMode]);
+
   const toggleTag = (chip: FilterChip) =>
     setSelectedTags((prev) =>
       prev.some((s) => chipKey(s) === chipKey(chip))

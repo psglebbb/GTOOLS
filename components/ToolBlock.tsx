@@ -31,8 +31,6 @@ export function ToolBlock({ entry }: { entry: any }) {
         style={{
           fontFamily: "var(--font-display)",
           fontWeight: 400,
-          fontSize: 54,
-          lineHeight: "50px",
           letterSpacing: "-0.04em",
           textAlign: "center",
           textTransform: "uppercase",

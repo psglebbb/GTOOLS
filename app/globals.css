@@ -180,5 +180,9 @@ html, body {
 
 /* Big WWW. tool link — grey by default, shifts to its category colour on hover.
    The per-tool category colour is passed in via the --tool-www-hover custom prop. */
-.tool-www { color: var(--tool-link); transition: color 160ms linear; }
+.tool-www { color: var(--tool-link); transition: color 160ms linear; font-size: 54px; line-height: 50px; }
 .tool-www:hover { color: var(--tool-www-hover, var(--tool-link)); }
+/* Mobile (< desktop breakpoint): ~15% smaller block title. */
+@media (max-width: 699px) {
+  .tool-www { font-size: 46px; line-height: 43px; }
+}

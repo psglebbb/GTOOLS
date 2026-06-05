@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 interface Category {
   id: string;
@@ -19,6 +19,15 @@ interface Props {
 
 export function ClosedMenu({ categories, activeId, onSelect, rowH = 34.2, overlap = 26 }: Props) {
   const [open, setOpen] = useState(false);
+
+  // Close the menu on any scroll (capture phase catches window scroll on mobile
+  // and inner-column scroll on desktop, since scroll events don't bubble).
+  useEffect(() => {
+    if (!open) return;
+    const close = () => setOpen(false);
+    window.addEventListener("scroll", close, true);
+    return () => window.removeEventListener("scroll", close, true);
+  }, [open]);
 
   const ordered = (() => {
     const active = categories.find((c) => c.id === activeId);
