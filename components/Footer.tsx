@@ -1,8 +1,11 @@
 "use client";
 
-const EN_TEXT = `The online collection is presented as a curated series of links, each accompanied by the author's name, the tool's function, its general category, and a concise introductory description. The tools were gathered from internet archives, online communities, social media, and creative coding platforms.\n\nThe Graphic Tools Museum (GTOOLS)\nis based in Linz, Austria.\n\nFor further information:\ninfo@graphictools.net`;
+const STUDIO_URL = "https://www.o-g-o.studio/";
+const EMAIL = "hio@o-g-o.studio";
 
-const DE_TEXT = `Die Online-Sammlung wird als kuratierte Reihe von Links präsentiert, jeweils mit Namen der Autorin/des Autors, der Funktion des Tools, einer allgemeinen Kategorie und einer kurzen Beschreibung. Die Tools stammen aus Internet-Archiven, Online-Communities, sozialen Medien und Creative-Coding-Plattformen.\n\nDas Graphic Tools Museum (GTOOLS)\nhat seinen Sitz in Linz, Österreich.\n\nFür weitere Informationen:\ninfo@graphictools.net`;
+const EN_TEXT = `The online collection is presented as a curated series of links, each accompanied by the author's name, the tool's function, its general category, and a concise introductory description. The tools were gathered from internet archives, online communities, social media, and creative coding platforms.\n\nThe Graphic Tools Museum (GTOOLS)\nis based in Linz, Austria.\n\nFor further information:\n`;
+
+const DE_TEXT = `Die Online-Sammlung wird als kuratierte Reihe von Links präsentiert, jeweils mit Namen der Autorin/des Autors, der Funktion des Tools, einer allgemeinen Kategorie und einer kurzen Beschreibung. Die Tools stammen aus Internet-Archiven, Online-Communities, sozialen Medien und Creative-Coding-Plattformen.\n\nDas Graphic Tools Museum (GTOOLS)\nhat seinen Sitz in Linz, Österreich.\n\nFür weitere Informationen:\n`;
 
 interface Props {
   mode: "closed" | "info";
@@ -47,10 +50,16 @@ export function Footer({ mode, lang, onTabChange, onLangChange }: Props) {
         transition: "max-height 380ms cubic-bezier(.22,.61,.36,1), padding 220ms linear, gap 220ms linear",
       }}
     >
-      {/* Copyright row */}
-      <div style={{ fontFamily: "var(--font-mono)", fontWeight: 700, fontSize: isInfo ? 9 : 8.1, lineHeight: isInfo ? "10px" : "9px", letterSpacing: "0.07em", color: "var(--accent-purple)", textTransform: "uppercase", transition: "font-size 220ms linear" }}>
+      {/* Copyright row — links to the studio */}
+      <a
+        href={STUDIO_URL}
+        target="_blank"
+        rel="noopener noreferrer"
+        onClick={(e) => e.stopPropagation()}
+        style={{ fontFamily: "var(--font-mono)", fontWeight: 700, fontSize: isInfo ? 9 : 8.1, lineHeight: isInfo ? "10px" : "9px", letterSpacing: "0.07em", color: "var(--accent-purple)", textTransform: "uppercase", textDecoration: "none", cursor: "pointer", transition: "font-size 220ms linear" }}
+      >
         © 2026. Designed / Hosted by OGO S.T.U. (STUDIO)<br />Original Graphic Order
-      </div>
+      </a>
 
       {/* Brand + tabs */}
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
@@ -82,10 +91,19 @@ export function Footer({ mode, lang, onTabChange, onLangChange }: Props) {
       }}>
         <p style={{ fontFamily: "var(--font-display)", fontWeight: 700, fontSize: 14, lineHeight: "16px", letterSpacing: "-0.04em", color: "rgb(0,0,0)", whiteSpace: "pre-line", margin: 0 }}>
           {lang === "EN" ? EN_TEXT : DE_TEXT}
+          <a
+            href={`mailto:${EMAIL}`}
+            onClick={(e) => e.stopPropagation()}
+            style={{ color: "inherit", textDecoration: "underline" }}
+          >
+            {EMAIL}
+          </a>
         </p>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src="/assets/OGO_GTOOLS.svg" alt="OGO — GTOOLS" style={{ height: 30, width: "auto" }} />
+          <a href={STUDIO_URL} target="_blank" rel="noopener noreferrer" onClick={(e) => e.stopPropagation()} style={{ display: "inline-flex" }}>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src="/assets/OGO_GTOOLS.svg" alt="OGO — GTOOLS" style={{ height: 30, width: "auto" }} />
+          </a>
           <div style={{ display: "flex", gap: 8 }}>
             <Tab label="Tools" active={false} onClick={() => onTabChange("closed")} />
             <Tab label="Info"  active={true}  onClick={() => onTabChange("info")} />
