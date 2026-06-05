@@ -9,10 +9,12 @@ export function AuthorList({ authors }: { authors: string[] }) {
     );
   }
 
+  // 1:1 with the closed-column author staples (DesktopColumns): a vertical stack
+  // of fit-content plates, group "AUTHOR", surface colour, multiline, minHeight 38.
   return (
-    <div style={{ display: "flex", flexWrap: "wrap", gap: "var(--gap-row)" }}>
+    <div style={{ display: "flex", flexDirection: "column", gap: "var(--gap-row)", alignItems: "flex-start" }}>
       {authors.map((name) => (
-        <Tag key={name} group="Author" value={name} color="var(--surface)" />
+        <Tag key={name} group="AUTHOR" value={name} color="var(--surface)" width="fit-content" minHeight={38} multiline />
       ))}
     </div>
   );

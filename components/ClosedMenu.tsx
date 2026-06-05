@@ -86,6 +86,7 @@ export function ClosedMenu({ categories, activeId, onSelect, rowH = 34.2, overla
                 lineHeight: "16px",
                 letterSpacing: "-0.05em",
                 whiteSpace: "nowrap",
+                textTransform: "uppercase",
                 opacity: buried ? 0 : 1,
                 transition: buried
                   ? "opacity 120ms linear"

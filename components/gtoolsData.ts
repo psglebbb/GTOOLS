@@ -20,6 +20,11 @@ export const CATEGORIES: Category[] = [
   { id: "authors", label: "ALL AUTHORS",          color: "transparent", outline: true },
 ];
 
+// The display colour of a big category, by id (used e.g. for the tool-link hover).
+export function colorForCategory(catId: string): string {
+  return CATEGORIES.find((c) => c.id === catId)?.color ?? "var(--tool-link)";
+}
+
 export interface TagLike { group: string; value: string; color?: string; }
 
 // The entries currently published for a given category.
@@ -56,8 +61,15 @@ export function authorsList(tools: any[], news: any[]): string[] {
   const seen = new Set<string>();
   const out: string[] = [];
   for (const entry of [...tools, ...news]) {
-    const name = entry.author?.name;
-    if (name && !seen.has(name)) { seen.add(name); out.push(name); }
+    const list = entry.authors?.length
+      ? entry.authors
+      : entry.author
+        ? [entry.author]
+        : [];
+    for (const a of list) {
+      const name = a?.name;
+      if (name && !seen.has(name)) { seen.add(name); out.push(name); }
+    }
   }
   return out;
 }

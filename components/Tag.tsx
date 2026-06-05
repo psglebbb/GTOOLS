@@ -10,6 +10,13 @@ interface TagProps {
   style?: CSSProperties;
   onClick?: () => void;
   multiline?: boolean;
+  // "upper" → ALL CAPS (big categories); "title" → Title Case (tags like Jpeg, Png).
+  valueCase?: "upper" | "title";
+}
+
+// Title-case that also lowercases acronyms, so "PNG" → "Png", "Open Source" stays.
+function titleCase(s: string): string {
+  return s.replace(/\S+/g, (w) => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase());
 }
 
 export function Tag({
@@ -22,7 +29,9 @@ export function Tag({
   style = {},
   onClick,
   multiline = false,
+  valueCase,
 }: TagProps) {
+  const displayValue = valueCase === "title" ? titleCase(value) : value;
   const bg = outline ? "#000" : color;
   const txtColor = outline ? "rgb(195,195,195)" : (style?.color ?? "rgb(2,2,2)");
 
@@ -37,6 +46,7 @@ export function Tag({
         padding: "4px 18px 4px 8px",
         minHeight,
         width,
+        maxWidth: "100%",
         boxSizing: "border-box",
         display: "flex",
         flexDirection: "column",
@@ -69,9 +79,13 @@ export function Tag({
           letterSpacing: "-0.05em",
           color: txtColor,
           whiteSpace: multiline ? "pre-line" : "nowrap",
+          overflowWrap: "break-word",
+          wordBreak: "break-word",
+          maxWidth: "100%",
+          textTransform: valueCase === "upper" ? "uppercase" : undefined,
         }}
       >
-        {value}
+        {displayValue}
       </span>
     </div>
   );

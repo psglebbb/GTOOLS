@@ -177,3 +177,8 @@ html, body {
 /* Utility: hide scrollbar but keep scroll */
 .hide-scrollbar::-webkit-scrollbar { display: none; }
 .hide-scrollbar { scrollbar-width: none; }
+
+/* Big WWW. tool link — grey by default, shifts to its category colour on hover.
+   The per-tool category colour is passed in via the --tool-www-hover custom prop. */
+.tool-www { color: var(--tool-link); transition: color 160ms linear; }
+.tool-www:hover { color: var(--tool-www-hover, var(--tool-link)); }

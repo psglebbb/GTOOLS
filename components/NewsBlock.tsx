@@ -1,6 +1,7 @@
 import Image from "next/image";
 import { urlFor } from "@/sanity/lib/client";
 import { Tag } from "./Tag";
+import { AuthorPlates } from "./AuthorPlates";
 import { colorForTag } from "./tagColors";
 
 export function NewsBlock({ entry }: { entry: any }) {
@@ -17,14 +18,8 @@ export function NewsBlock({ entry }: { entry: any }) {
         </span>
       )}
 
-      {/* Author — transparent plate, quiet grey type */}
-      <Tag
-        group="Author:"
-        value={entry.author?.name ?? "—"}
-        color="transparent"
-        width="100%"
-        style={{ color: "var(--plate-quiet)" }}
-      />
+      {/* Author(s) — one transparent plate per author */}
+      <AuthorPlates entry={entry} />
 
       {/* Feature image — width fixed, height variable, never cropped */}
       <div style={{ width: "100%", aspectRatio: "3/2", background: "#111", borderRadius: "var(--radius-tag)", overflow: "hidden", position: "relative" }}>
@@ -65,7 +60,7 @@ export function NewsBlock({ entry }: { entry: any }) {
       {(entry.tags?.length ?? 0) > 0 && (
         <div style={{ display: "flex", flexWrap: "wrap", gap: "var(--gap-row)", marginTop: "var(--gap-divide)" }}>
           {entry.tags.map((tag: any, i: number) => (
-            <Tag key={i} group={tag.group} value={tag.value} color={colorForTag(tag.value, tag.color)} />
+            <Tag key={i} group={tag.group} value={tag.value} color={colorForTag(tag.value, tag.color)} valueCase={tag.group === "AUTHOR" ? undefined : "title"} />
           ))}
         </div>
       )}

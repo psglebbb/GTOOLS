@@ -19,11 +19,20 @@ export const newsEntrySchema = defineType({
       validation: (Rule) => Rule.required(),
     }),
     defineField({
+      name: "authors",
+      title: "Authors",
+      description:
+        "One or more — a single person, a team, or a list of contributors.",
+      type: "array",
+      of: [{ type: "reference", to: [{ type: "author" }] }],
+      validation: (Rule) => Rule.min(1),
+    }),
+    defineField({
       name: "author",
-      title: "Author",
+      title: "Author (legacy — single)",
       type: "reference",
       to: [{ type: "author" }],
-      validation: (Rule) => Rule.required(),
+      hidden: ({ value }) => !value,
     }),
     defineField({
       name: "featureImage",

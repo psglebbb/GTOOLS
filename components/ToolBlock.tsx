@@ -1,9 +1,13 @@
+import { CSSProperties } from "react";
 import { Tag } from "./Tag";
+import { AuthorPlates } from "./AuthorPlates";
 import { colorForTag } from "./tagColors";
+import { colorForCategory } from "./gtoolsData";
 
 export function ToolBlock({ entry }: { entry: any }) {
   // Format URL as the big WWW. display
   const displayUrl = formatUrl(entry.url ?? "");
+  const categoryColor = colorForCategory(entry.category);
 
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: "var(--gap-section)" }}>
@@ -14,33 +18,35 @@ export function ToolBlock({ entry }: { entry: any }) {
         </span>
       )}
 
-      {/* Author — transparent plate, quiet grey type */}
-      <Tag
-        group="Author:"
-        value={entry.author?.name ?? "—"}
-        color="transparent"
-        width="100%"
-        style={{ color: "var(--plate-quiet)" }}
-      />
+      {/* Author(s) — one transparent plate per author */}
+      <AuthorPlates entry={entry} />
 
-      {/* Big WWW. URL display — light grey, centred, uppercase */}
-      <div
+      {/* Big WWW. URL display — link; light grey, shifts to the category colour on
+          hover, opens in a new tab. */}
+      <a
+        href={entry.url}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="tool-www"
         style={{
           fontFamily: "var(--font-display)",
           fontWeight: 400,
           fontSize: 54,
           lineHeight: "50px",
           letterSpacing: "-0.04em",
-          color: "var(--tool-link)",
           textAlign: "center",
           textTransform: "uppercase",
           whiteSpace: "pre-line",
           wordBreak: "break-word",
           padding: "8px 8px",
-        }}
+          display: "block",
+          textDecoration: "none",
+          cursor: "pointer",
+          ["--tool-www-hover" as any]: categoryColor,
+        } as CSSProperties}
       >
         {displayUrl}
-      </div>
+      </a>
 
       {/* Function — transparent plate, quiet grey type */}
       {entry.functionValue && (
@@ -49,6 +55,7 @@ export function ToolBlock({ entry }: { entry: any }) {
           value={entry.functionValue}
           color="transparent"
           width="100%"
+          multiline
           style={{ color: "var(--plate-quiet)" }}
         />
       )}
@@ -68,7 +75,7 @@ export function ToolBlock({ entry }: { entry: any }) {
       {(entry.tags?.length ?? 0) > 0 && (
         <div style={{ display: "flex", flexWrap: "wrap", gap: "var(--gap-row)", marginTop: "var(--gap-divide)" }}>
           {entry.tags.map((tag: any, i: number) => (
-            <Tag key={i} group={tag.group} value={tag.value} color={colorForTag(tag.value, tag.color)} />
+            <Tag key={i} group={tag.group} value={tag.value} color={colorForTag(tag.value, tag.color)} valueCase={tag.group === "AUTHOR" ? undefined : "title"} />
           ))}
         </div>
       )}

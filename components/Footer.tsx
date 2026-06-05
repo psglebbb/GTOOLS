@@ -13,7 +13,10 @@ interface Props {
 
 function Tab({ label, active, onClick }: { label: string; active: boolean; onClick: () => void }) {
   return (
-    <div onClick={onClick} style={{ cursor: "pointer", display: "flex", flexDirection: "column", alignItems: "flex-end", gap: 1.8 }}>
+    <div
+      onClick={(e) => { e.stopPropagation(); onClick(); }}
+      style={{ cursor: "pointer", display: "flex", flexDirection: "column", alignItems: "flex-end", gap: 1.8 }}
+    >
       <div style={{ height: 1.8, width: 35.1, background: active ? "var(--accent-purple)" : "transparent" }} />
       <span style={{ fontFamily: "var(--font-display)", fontWeight: 700, fontSize: 14.4, lineHeight: "14.4px", letterSpacing: "-0.05em", color: active ? "var(--accent-purple)" : "rgb(0,0,0)", minWidth: 35.1, textAlign: "center" }}>
         {label}
@@ -26,19 +29,24 @@ export function Footer({ mode, lang, onTabChange, onLangChange }: Props) {
   const isInfo = mode === "info";
 
   return (
-    <div style={{
-      width: "100%",
-      borderRadius: "var(--radius-footer)",
-      background: "var(--surface)",
-      padding: isInfo ? "6px 7px" : "3.6px 6.3px",
-      boxSizing: "border-box",
-      display: "flex",
-      flexDirection: "column",
-      gap: isInfo ? 14 : 24,
-      overflow: "hidden",
-      maxHeight: isInfo ? 460 : 70,
-      transition: "max-height 380ms cubic-bezier(.22,.61,.36,1), padding 220ms linear, gap 220ms linear",
-    }}>
+    <div
+      // Collapsed: clicking anywhere on the bar opens Info. Inner tabs stopPropagation.
+      onClick={isInfo ? undefined : () => onTabChange("info")}
+      style={{
+        width: "100%",
+        borderRadius: "var(--radius-footer)",
+        background: "var(--surface)",
+        padding: isInfo ? "6px 7px" : "3.6px 6.3px",
+        boxSizing: "border-box",
+        display: "flex",
+        flexDirection: "column",
+        gap: isInfo ? 14 : 24,
+        overflow: "hidden",
+        maxHeight: isInfo ? 460 : 70,
+        cursor: isInfo ? "default" : "pointer",
+        transition: "max-height 380ms cubic-bezier(.22,.61,.36,1), padding 220ms linear, gap 220ms linear",
+      }}
+    >
       {/* Copyright row */}
       <div style={{ fontFamily: "var(--font-mono)", fontWeight: 700, fontSize: isInfo ? 9 : 8.1, lineHeight: isInfo ? "10px" : "9px", letterSpacing: "0.07em", color: "var(--accent-purple)", textTransform: "uppercase", transition: "font-size 220ms linear" }}>
         © 2026. Designed / Hosted by OGO S.T.U. (STUDIO)<br />Original Graphic Order

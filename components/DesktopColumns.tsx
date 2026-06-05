@@ -44,14 +44,17 @@ export function DesktopColumns({
 
   return (
     <div style={{ position: "fixed", inset: 0, background: "var(--bg)", overflow: "hidden" }}>
-      {/* Fixed GTOOLS wordmark — hovers above the leftmost (viewing) column */}
-      <div style={{ position: "fixed", left: 2, top: 0, width: COL, zIndex: 30, pointerEvents: "none" }}>
+      {/* GTOOLS wordmark — full-width black masthead. Not fixed: it sits at the
+          top of the (fixed) shell and the columns scroll vertically *under* it,
+          so it reads like a top border that masks everything beneath. */}
+      <div style={{ position: "absolute", left: 0, top: 0, width: "100%", background: "var(--bg)", zIndex: 30, pointerEvents: "none" }}>
         <div
           style={{
+            width: COL, marginLeft: 2,
             fontFamily: "var(--font-display)", fontWeight: 400,
             fontSize: "var(--t-logo-desktop)", lineHeight: "72px",
-            letterSpacing: "var(--tr-display)", color: "var(--ink-on-dark)",
-            textAlign: "center", padding: "0 0 8px", background: "var(--bg)",
+            letterSpacing: "var(--tr-display)", color: "var(--tool-link)",
+            textAlign: "center", padding: "0 0 8px",
           }}
         >
           GTOOLS
@@ -71,8 +74,9 @@ export function DesktopColumns({
         {/* Viewing (live) column */}
         <div
           className="hide-scrollbar"
+          onScroll={handleScroll}
           style={{
-            flex: `0 0 ${COL}`, width: COL, minHeight: "100%",
+            flex: `0 0 ${COL}`, width: COL, minWidth: 0, maxWidth: COL, minHeight: "100%",
             padding: "80px 0 110px", boxSizing: "border-box",
             display: "flex", flexDirection: "column", gap: "var(--gap-block)",
             overflowY: "auto",
@@ -93,18 +97,19 @@ export function DesktopColumns({
               key={cat.id}
               className="hide-scrollbar"
               onClick={() => activate(cat.id)}
+              onScroll={handleScroll}
               style={{
-                flex: `0 0 ${COL}`, width: COL, minHeight: "100%",
+                flex: `0 0 ${COL}`, width: COL, minWidth: 0, maxWidth: COL, minHeight: "100%",
                 padding: "80px 0 110px", boxSizing: "border-box",
                 display: "flex", flexDirection: "column", gap: "var(--gap-block)",
                 overflowY: "auto", cursor: "pointer",
                 borderLeft: "1px solid rgba(255,255,255,0.04)",
               }}
             >
-              <Tag group="Category" value={cat.label} color={cat.color} outline={cat.outline} width="100%" minHeight={38} />
+              <Tag group="Category" value={cat.label} color={cat.color} outline={cat.outline} width="100%" minHeight={38} valueCase="upper" />
               <div style={{ display: "flex", flexDirection: "column", gap: "var(--gap-row)", alignItems: "flex-start" }}>
                 {tags.map((t, i) => (
-                  <Tag key={i} group={t.group} value={t.value} color={colorForTag(t.value, t.color)} width="fit-content" minHeight={38} />
+                  <Tag key={i} group={t.group} value={t.value} color={colorForTag(t.value, t.color)} width="fit-content" minHeight={38} multiline valueCase={t.group === "AUTHOR" ? undefined : "title"} />
                 ))}
               </div>
             </div>
