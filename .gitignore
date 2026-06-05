@@ -22,3 +22,6 @@ next-env.d.ts
 # debug logs
 npm-debug.log*
 yarn-debug.log*
+
+# temp design artifacts
+.design-tmp/

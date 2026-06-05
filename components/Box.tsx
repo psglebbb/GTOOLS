@@ -16,6 +16,7 @@ export function Box({ entry }: { entry: any }) {
   const categoryColor = colorForCategory(entry.category);
   const displayUrl = formatUrl(entry.url ?? "");
   const imageUrl = entry.featureImage ? urlFor(entry.featureImage).width(840).url() : null;
+  const dims = entry.imgDims; // { width, height, aspectRatio } from Sanity
 
   const showPicture = (mode === "picture" || mode === "pictureTitle") && imageUrl;
   const showTitleSolo = mode === "title" && entry.url;
@@ -35,12 +36,13 @@ export function Box({ entry }: { entry: any }) {
 
       {/* Picture — optionally with the title overlaid in difference blend */}
       {showPicture && (
-        <div style={{ position: "relative", width: "100%", aspectRatio: "3/2", background: "#111", borderRadius: "var(--radius-tag)", overflow: "hidden" }}>
+        <div style={{ position: "relative", width: "100%", borderRadius: "var(--radius-tag)", overflow: "hidden", lineHeight: 0 }}>
           <Image
             src={imageUrl!}
             alt={entry.title ?? "Box image"}
-            fill
-            style={{ objectFit: "contain" }}
+            width={dims?.width ?? 840}
+            height={dims?.height ?? 560}
+            style={{ width: "100%", height: "auto", display: "block" }}
             sizes="(max-width: 700px) 378px, 420px"
           />
           {overlayTitle && (

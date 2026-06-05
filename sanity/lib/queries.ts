@@ -10,6 +10,7 @@ export const ALL_TOOLS_QUERY = `
     category,
     displayMode,
     featureImage,
+    "imgDims": featureImage.asset->metadata.dimensions,
     "authors": coalesce(authors[]-> { name }, [author-> { name }]),
     functionLabel,
     functionValue,
