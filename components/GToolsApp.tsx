@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Logo } from "./Logo";
 import { ClosedMenu } from "./ClosedMenu";
 import { FilterBar } from "./FilterBar";
@@ -93,6 +93,28 @@ export function GToolsApp({ news, tools }: Props) {
         : [...prev, chip]
     );
 
+  // ── Mobile: horizontal swipe switches category (left → next, right → prev) ──
+  const touchStart = useRef<{ x: number; y: number } | null>(null);
+  const onTouchStart = (e: React.TouchEvent) => {
+    const t = e.touches[0];
+    touchStart.current = { x: t.clientX, y: t.clientY };
+  };
+  const onTouchEnd = (e: React.TouchEvent) => {
+    const s = touchStart.current;
+    touchStart.current = null;
+    if (!s) return;
+    const t = e.changedTouches[0];
+    const dx = t.clientX - s.x;
+    const dy = t.clientY - s.y;
+    // Only act on a deliberate, mostly-horizontal swipe (don't hijack vertical scroll).
+    if (Math.abs(dx) < 50 || Math.abs(dx) < Math.abs(dy) * 1.5) return;
+    const idx = CATEGORIES.findIndex((c) => c.id === activeCategory);
+    const next = dx < 0 ? idx + 1 : idx - 1;
+    if (next < 0 || next >= CATEGORIES.length) return;
+    setActiveCategory(CATEGORIES[next].id);
+    window.scrollTo({ top: 0 });
+  };
+
   // Phone rotated to landscape → block the horizontal format, ask for portrait.
   if (isPhoneLandscape) {
     return <RotateNotice />;
@@ -118,6 +140,8 @@ export function GToolsApp({ news, tools }: Props) {
   // ── Mobile: single fixed-width viewing column ──
   return (
     <div
+      onTouchStart={onTouchStart}
+      onTouchEnd={onTouchEnd}
       style={{
         minHeight: "100svh",
         background: "var(--bg)",
