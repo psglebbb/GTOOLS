@@ -8,7 +8,8 @@ export function Logo() {
         lineHeight: "60px",
         letterSpacing: "-0.04em",
         color: "var(--ink-on-dark)",
-        paddingLeft: 6,
+        width: "100%",
+        textAlign: "center",
         userSelect: "none",
       }}
     >

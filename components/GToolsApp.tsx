@@ -29,12 +29,50 @@ function useIsDesktop() {
   return isDesktop;
 }
 
+// A phone held in landscape: short viewport + landscape orientation. Desktops and
+// tablets in landscape are taller than this, so they're unaffected.
+function useIsPhoneLandscape() {
+  const [v, setV] = useState(false);
+  useEffect(() => {
+    const mq = window.matchMedia("(max-height: 500px) and (orientation: landscape)");
+    const update = () => setV(mq.matches);
+    update();
+    mq.addEventListener("change", update);
+    return () => mq.removeEventListener("change", update);
+  }, []);
+  return v;
+}
+
+// Full-screen block shown when a phone is rotated to landscape — keeps the site
+// in its intended portrait format instead of flipping to the desktop layout.
+function RotateNotice() {
+  return (
+    <div
+      style={{
+        position: "fixed", inset: 0, zIndex: 1000,
+        background: "var(--bg)", color: "var(--ink-on-dark)",
+        display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center",
+        gap: 18, padding: 24, textAlign: "center",
+      }}
+    >
+      <div style={{ fontFamily: "var(--font-display)", fontWeight: 400, fontSize: 40, lineHeight: "38px", letterSpacing: "-0.04em" }}>
+        GTOOLS
+      </div>
+      <div style={{ fontSize: 28 }}>↻</div>
+      <p style={{ fontFamily: "var(--font-mono)", fontWeight: 700, fontSize: 11, letterSpacing: "0.07em", textTransform: "uppercase", maxWidth: 280, lineHeight: "16px" }}>
+        Please rotate your device to portrait
+      </p>
+    </div>
+  );
+}
+
 export function GToolsApp({ news, tools }: Props) {
   const [activeCategory, setActiveCategory] = useState("news");
   const [footerMode, setFooterMode] = useState<"closed" | "info">("closed");
   const [lang, setLang] = useState<"EN" | "DE">("EN");
   const [selectedTags, setSelectedTags] = useState<FilterChip[]>([]);
   const isDesktop = useIsDesktop();
+  const isPhoneLandscape = useIsPhoneLandscape();
 
   // Switching big category clears the active filter (one filter context per category).
   useEffect(() => { setSelectedTags([]); }, [activeCategory]);
@@ -45,6 +83,11 @@ export function GToolsApp({ news, tools }: Props) {
         ? prev.filter((s) => chipKey(s) !== chipKey(chip))
         : [...prev, chip]
     );
+
+  // Phone rotated to landscape → block the horizontal format, ask for portrait.
+  if (isPhoneLandscape) {
+    return <RotateNotice />;
+  }
 
   if (isDesktop) {
     return (
