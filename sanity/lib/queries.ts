@@ -11,7 +11,7 @@ export const ALL_TOOLS_QUERY = `
     displayMode,
     featureImage,
     "imgDims": featureImage.asset->metadata.dimensions,
-    "authors": coalesce(authors[]-> { name }, [author-> { name }]),
+    "authors": coalesce(authors[]-> { name, url }, [author-> { name, url }]),
     functionLabel,
     functionValue,
     description,

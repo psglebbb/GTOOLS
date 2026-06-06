@@ -71,7 +71,7 @@ export function FilterBar({ activeCategory, tools, news, selected, onToggle }: P
                 cursor: "pointer",
               }}
             >
-              <Tag group={chip.group} value={chip.value} color={bg} multiline valueCase={chip.group === "AUTHOR" ? undefined : "title"} />
+              <Tag group={chip.group} value={chip.value} color={bg} multiline valueCase={chip.group === "AUTHOR" || chip.group === "EVENT" ? undefined : "title"} />
             </div>
           );
         })}
@@ -88,7 +88,7 @@ export function FilterBar({ activeCategory, tools, news, selected, onToggle }: P
               color="#FF0000"
               width="fit-content"
               multiline
-              valueCase={chip.group === "AUTHOR" ? undefined : "title"}
+              valueCase={chip.group === "AUTHOR" || chip.group === "EVENT" ? undefined : "title"}
               style={{ color: "#FFFFFF" }}
               onClick={() => onToggle(chip)}
             />

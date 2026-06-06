@@ -126,7 +126,7 @@ export function DesktopColumns({
                       activateWithTag(cat.id, { group: t.group, value: t.value, color: t.color });
                     }}
                   >
-                    <Tag group={t.group} value={t.value} color={colorForTag(t.value, t.color)} width="fit-content" minHeight={38} multiline valueCase={t.group === "AUTHOR" ? undefined : "title"} />
+                    <Tag group={t.group} value={t.value} color={colorForTag(t.value, t.color)} width="fit-content" minHeight={38} multiline valueCase={t.group === "AUTHOR" || t.group === "EVENT" ? undefined : "title"} />
                   </div>
                 ))}
               </div>

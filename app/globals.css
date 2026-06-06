@@ -186,3 +186,8 @@ html, body {
 @media (max-width: 699px) {
   .tool-www { font-size: 46px; line-height: 43px; }
 }
+
+/* Author name in a box — quiet grey by default, shifts to its category colour on
+   hover (like the title link). Category colour passed via --author-hover. */
+.author-name { color: var(--plate-quiet); transition: color 140ms linear; }
+.author-name:hover { color: var(--author-hover, var(--plate-quiet)); }

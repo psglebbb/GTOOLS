@@ -95,7 +95,9 @@ export function Box({ entry }: { entry: any }) {
             display: "block",
             textDecoration: "none",
             cursor: "pointer",
-            ["--tool-www-hover" as any]: categoryColor,
+            // Visible URL title always carries its category colour (key on mobile,
+            // where there's no hover).
+            color: categoryColor,
           } as CSSProperties}
         >
           {displayUrl}
@@ -129,7 +131,7 @@ export function Box({ entry }: { entry: any }) {
       {(entry.tags?.length ?? 0) > 0 && (
         <div style={{ display: "flex", flexWrap: "wrap", gap: "var(--gap-row)", marginTop: "var(--gap-divide)" }}>
           {entry.tags.map((tag: any, i: number) => (
-            <Tag key={i} group={tag.group} value={tag.value} color={colorForTag(tag.value, tag.color)} valueCase={tag.group === "AUTHOR" ? undefined : "title"} />
+            <Tag key={i} group={tag.group} value={tag.value} color={colorForTag(tag.value, tag.color)} valueCase={tag.group === "AUTHOR" || tag.group === "EVENT" ? undefined : "title"} />
           ))}
         </div>
       )}
