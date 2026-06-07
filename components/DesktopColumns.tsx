@@ -93,7 +93,7 @@ export function DesktopColumns({
             <ClosedMenu categories={CATEGORIES} activeId={activeCategory} onSelect={onSelectCategory} rowH={38} overlap={30} />
             <FilterBar activeCategory={activeCategory} tools={tools} news={news} selected={selectedTags} onToggle={onToggleTag} />
           </div>
-          <CategoryBody activeCategory={activeCategory} news={news} tools={tools} selectedTags={selectedTags} />
+          <CategoryBody activeCategory={activeCategory} news={news} tools={tools} selectedTags={selectedTags} onToggleTag={onToggleTag} />
         </div>
 
         {/* Closed columns — header + stapled real tags for the category */}

@@ -8,6 +8,7 @@ interface Props {
   news: any[];
   tools: any[];
   selectedTags?: FilterChip[];
+  onToggleTag?: (chip: FilterChip) => void;
 }
 
 // True when an entry carries every selected tag (AND — each filter narrows further).
@@ -21,7 +22,7 @@ function matchesAllTags(entry: any, selected: FilterChip[]): boolean {
 // The live block for a category — shared between the mobile single column and
 // the desktop viewing column. Every big category (including News) is a filtered
 // list of unified boxes; Authors is the one special view.
-export function CategoryBody({ activeCategory, news, tools, selectedTags = [] }: Props) {
+export function CategoryBody({ activeCategory, news, tools, selectedTags = [], onToggleTag }: Props) {
   if (activeCategory === "authors") {
     return <AuthorList authors={authorsList(tools, news)} />;
   }
@@ -37,7 +38,7 @@ export function CategoryBody({ activeCategory, news, tools, selectedTags = [] }:
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: "var(--gap-tools)" }}>
       {visible.map((entry) => (
-        <Box key={entry._id} entry={entry} />
+        <Box key={entry._id} entry={entry} selectedTags={selectedTags} onToggleTag={onToggleTag} />
       ))}
     </div>
   );

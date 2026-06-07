@@ -204,7 +204,7 @@ export function GToolsApp({ news, tools }: Props) {
           if (footerMode === "info") setFooterMode("closed");
         }}
       >
-        <CategoryBody activeCategory={activeCategory} news={news} tools={tools} selectedTags={selectedTags} />
+        <CategoryBody activeCategory={activeCategory} news={news} tools={tools} selectedTags={selectedTags} onToggleTag={toggleTag} />
       </div>
 
       {/* Fixed footer */}

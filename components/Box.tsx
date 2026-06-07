@@ -5,12 +5,21 @@ import { Tag } from "./Tag";
 import { AuthorPlates } from "./AuthorPlates";
 import { colorForTagInGroup } from "./tagColors";
 import { colorForCategory } from "./gtoolsData";
+import { chipKey, type FilterChip } from "./FilterBar";
 
 // One box for both tools and news. Three display modes:
 //   title        → the big WWW. URL link
 //   picture      → the feature image
 //   pictureTitle → the image with the title overlaid in difference blend
-export function Box({ entry }: { entry: any }) {
+export function Box({
+  entry,
+  selectedTags = [],
+  onToggleTag,
+}: {
+  entry: any;
+  selectedTags?: FilterChip[];
+  onToggleTag?: (chip: FilterChip) => void;
+}) {
   const mode: "title" | "picture" | "pictureTitle" =
     entry.displayMode ?? (entry.featureImage ? "picture" : "title");
   const categoryColor = colorForCategory(entry.category);
@@ -130,9 +139,21 @@ export function Box({ entry }: { entry: any }) {
       {/* Tags */}
       {(entry.tags?.length ?? 0) > 0 && (
         <div style={{ display: "flex", flexWrap: "wrap", gap: "var(--gap-row)", marginTop: "var(--gap-divide)" }}>
-          {entry.tags.map((tag: any, i: number) => (
-            <Tag key={i} group={tag.group} value={tag.value} color={colorForTagInGroup(tag.group, tag.value, tag.color)} valueCase={tag.group === "AUTHOR" || tag.group === "EVENT" ? undefined : "title"} />
-          ))}
+          {entry.tags.map((tag: any, i: number) => {
+            const chip: FilterChip = { group: tag.group, value: tag.value, color: tag.color };
+            const sel = selectedTags.some((s) => chipKey(s) === chipKey(chip));
+            return (
+              <Tag
+                key={i}
+                group={tag.group}
+                value={tag.value}
+                color={sel ? "#FF0000" : colorForTagInGroup(tag.group, tag.value, tag.color)}
+                style={sel ? { color: "#FFFFFF" } : undefined}
+                valueCase={tag.group === "AUTHOR" || tag.group === "EVENT" ? undefined : "title"}
+                onClick={onToggleTag ? () => onToggleTag(chip) : undefined}
+              />
+            );
+          })}
         </div>
       )}
     </div>
