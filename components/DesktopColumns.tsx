@@ -7,7 +7,7 @@ import { FilterBar, type FilterChip } from "./FilterBar";
 import { CategoryBody } from "./CategoryBody";
 import { Tag } from "./Tag";
 import { Footer } from "./Footer";
-import { colorForTag } from "./tagColors";
+import { colorForTagInGroup } from "./tagColors";
 
 const COL = "var(--col-desktop)";
 
@@ -126,7 +126,7 @@ export function DesktopColumns({
                       activateWithTag(cat.id, { group: t.group, value: t.value, color: t.color });
                     }}
                   >
-                    <Tag group={t.group} value={t.value} color={colorForTag(t.value, t.color)} width="fit-content" minHeight={38} multiline valueCase={t.group === "AUTHOR" || t.group === "EVENT" ? undefined : "title"} />
+                    <Tag group={t.group} value={t.value} color={colorForTagInGroup(t.group, t.value, t.color)} width="fit-content" minHeight={38} multiline valueCase={t.group === "AUTHOR" || t.group === "EVENT" ? undefined : "title"} />
                   </div>
                 ))}
               </div>

@@ -12,6 +12,10 @@
 
 export const TAG_NEUTRAL = "#c3c3c3";
 
+// EVENT tags carry arbitrary event names, so they never map to a palette shade.
+// Pin them to one fixed colour so an EVENT tag looks identical everywhere.
+export const TAG_EVENT = "var(--tag-access-base)";
+
 interface GroupDef {
   h: number;          // base hue
   s: number;          // base saturation %
@@ -78,4 +82,11 @@ for (const g of GROUPS) {
 // Colour for a tag value. Falls back to an explicit colour, then the neutral base.
 export function colorForTag(value: string, fallback?: string): string {
   return MAP[norm(value)] ?? fallback ?? TAG_NEUTRAL;
+}
+
+// Group-aware colour: EVENT tags are always the one fixed EVENT colour,
+// everything else resolves by value as usual.
+export function colorForTagInGroup(group: string, value: string, fallback?: string): string {
+  if (group === "EVENT") return TAG_EVENT;
+  return colorForTag(value, fallback);
 }

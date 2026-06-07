@@ -1,4 +1,6 @@
-import { CSSProperties } from "react";
+"use client";
+
+import { CSSProperties, useState } from "react";
 
 interface TagProps {
   group: string;
@@ -31,13 +33,17 @@ export function Tag({
   multiline = false,
   valueCase,
 }: TagProps) {
+  const [hover, setHover] = useState(false);
   const displayValue = valueCase === "title" ? titleCase(value) : value;
-  const bg = outline ? "#000" : color;
-  const txtColor = outline ? "rgb(195,195,195)" : (style?.color ?? "rgb(2,2,2)");
+  // On hover every tag flips to the signal red + white type, hinting it reacts.
+  const bg = hover ? "#FF0000" : (outline ? "#000" : color);
+  const txtColor = hover ? "#FFFFFF" : (outline ? "rgb(195,195,195)" : (style?.color ?? "rgb(2,2,2)"));
 
   return (
     <div
       onClick={onClick}
+      onMouseEnter={() => setHover(true)}
+      onMouseLeave={() => setHover(false)}
       style={{
         position: "relative",
         borderRadius: "var(--radius-tag)",
@@ -53,7 +59,9 @@ export function Tag({
         justifyContent: "space-between",
         gap: 2,
         cursor: onClick ? "pointer" : "default",
+        transition: "background 120ms linear, color 120ms linear",
         ...style,
+        ...(hover ? { color: txtColor } : {}),
       }}
     >
       <span

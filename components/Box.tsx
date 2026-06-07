@@ -3,7 +3,7 @@ import Image from "next/image";
 import { urlFor } from "@/sanity/lib/client";
 import { Tag } from "./Tag";
 import { AuthorPlates } from "./AuthorPlates";
-import { colorForTag } from "./tagColors";
+import { colorForTagInGroup } from "./tagColors";
 import { colorForCategory } from "./gtoolsData";
 
 // One box for both tools and news. Three display modes:
@@ -131,7 +131,7 @@ export function Box({ entry }: { entry: any }) {
       {(entry.tags?.length ?? 0) > 0 && (
         <div style={{ display: "flex", flexWrap: "wrap", gap: "var(--gap-row)", marginTop: "var(--gap-divide)" }}>
           {entry.tags.map((tag: any, i: number) => (
-            <Tag key={i} group={tag.group} value={tag.value} color={colorForTag(tag.value, tag.color)} valueCase={tag.group === "AUTHOR" || tag.group === "EVENT" ? undefined : "title"} />
+            <Tag key={i} group={tag.group} value={tag.value} color={colorForTagInGroup(tag.group, tag.value, tag.color)} valueCase={tag.group === "AUTHOR" || tag.group === "EVENT" ? undefined : "title"} />
           ))}
         </div>
       )}

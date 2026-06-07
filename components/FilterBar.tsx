@@ -1,7 +1,7 @@
 "use client";
 
 import { Tag } from "./Tag";
-import { colorForTag } from "./tagColors";
+import { colorForTagInGroup } from "./tagColors";
 
 // Default filter colour map by group (fallback when an entry tag has no colour)
 const GROUP_COLOR: Record<string, string> = {
@@ -59,7 +59,7 @@ export function FilterBar({ activeCategory, tools, news, selected, onToggle }: P
       >
         {chips.map((chip) => {
           const sel = isSelected(chip);
-          const bg = colorForTag(chip.value, chip.color ?? GROUP_COLOR[chip.group]);
+          const bg = colorForTagInGroup(chip.group, chip.value, chip.color ?? GROUP_COLOR[chip.group]);
           return (
             <div
               key={chipKey(chip)}
