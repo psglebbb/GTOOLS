@@ -28,7 +28,7 @@ export function AuthorList({ authors }: { authors: AuthorLink[] }) {
       style={{
         display: "flex",
         flexDirection: "column",
-        ["--author-hover" as any]: "#FF0000",
+        ["--author-hover" as any]: "#e077c2",
       } as CSSProperties}
     >
       {authors.map((a) =>
