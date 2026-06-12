@@ -30,7 +30,7 @@ export const ALL_NEWS_QUERY = `
     _id,
     title,
     slug,
-    "authors": coalesce(authors[]-> { name }, [author-> { name }]),
+    "authors": coalesce(authors[]-> { name, url }, [author-> { name, url }]),
     featureImage,
     functionLabel,
     functionValue,

@@ -39,7 +39,7 @@ export function entriesForCategory(catId: string, tools: any[], _news: any[]): a
 // filter bar and the stapled closed-column staple on desktop.
 export function categoryTags(catId: string, tools: any[], news: any[]): TagLike[] {
   if (catId === "authors") {
-    return authorsList(tools, news).map((name) => ({
+    return authorsList(tools, news).map(({ name }) => ({
       group: "AUTHOR",
       value: name,
       color: "var(--surface)",
@@ -56,10 +56,13 @@ export function categoryTags(catId: string, tools: any[], news: any[]): TagLike[
   return out;
 }
 
-// All distinct author names across tools + news, in first-seen order.
-export function authorsList(tools: any[], news: any[]): string[] {
+export interface AuthorLink { name: string; url?: string; }
+
+// All distinct authors across tools + news, in first-seen order. Each carries its
+// optional `url` so the All-Authors view can render the name as an external link.
+export function authorsList(tools: any[], news: any[]): AuthorLink[] {
   const seen = new Set<string>();
-  const out: string[] = [];
+  const out: AuthorLink[] = [];
   for (const entry of [...tools, ...news]) {
     const list = entry.authors?.length
       ? entry.authors
@@ -68,7 +71,7 @@ export function authorsList(tools: any[], news: any[]): string[] {
         : [];
     for (const a of list) {
       const name = a?.name;
-      if (name && !seen.has(name)) { seen.add(name); out.push(name); }
+      if (name && !seen.has(name)) { seen.add(name); out.push({ name, url: a?.url }); }
     }
   }
   return out;

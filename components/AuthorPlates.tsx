@@ -64,7 +64,7 @@ export function AuthorPlates({ entry }: { entry: any }) {
               target="_blank"
               rel="noopener noreferrer"
               className="author-name"
-              style={{ ...valueStyle, textDecoration: "underline", cursor: "pointer" }}
+              style={{ ...valueStyle, textDecoration: "none", cursor: "pointer" }}
             >
               {a?.name ?? "—"}
             </a>
