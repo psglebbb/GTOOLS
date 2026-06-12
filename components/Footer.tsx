@@ -5,7 +5,7 @@ const EMAIL = "hio@o-g-o.studio";
 
 const EN_TEXT = `The online collection is presented as a curated series of links, each accompanied by the author's name, the tool's function, its general category, and a concise introductory description. The tools were gathered from internet archives, online communities, social media, and creative coding platforms.\n\nThe Graphic Tools Museum (GTOOLS)\nis based in Linz, Austria.\n\nFor further information:\n`;
 
-const DE_TEXT = `Die Online-Sammlung wird als kuratierte Reihe von Links präsentiert, jeweils mit Namen der Autorin/des Autors, der Funktion des Tools, einer allgemeinen Kategorie und einer kurzen Beschreibung. Die Tools stammen aus Internet-Archiven, Online-Communities, sozialen Medien und Creative-Coding-Plattformen.\n\nDas Graphic Tools Museum (GTOOLS)\nhat seinen Sitz in Linz, Österreich.\n\nFür weitere Informationen:\n`;
+const DE_TEXT = `Die Online-Sammlung wird als kuratierte Reihe von Links präsentiert, jeweils mit Namen der Autor*innen, der Funktion des Tools, einer allgemeinen Kategorie und einer kurzen Beschreibung. Die Tools stammen aus Internet-Archiven, Online-Communities, sozialen Medien und Creative-Coding-Plattformen.\n\nDas Graphic Tools Museum (GTOOLS)\nhat seinen Sitz in Linz, Österreich.\n\nFür weitere Informationen:\n`;
 
 interface Props {
   mode: "closed" | "info";
