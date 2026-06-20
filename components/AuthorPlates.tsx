@@ -1,5 +1,4 @@
 import { CSSProperties } from "react";
-import { colorForCategory } from "./gtoolsData";
 
 // One transparent plate listing all authors tightly (like a running list / Fließtext).
 // Accepts the new `authors` array or a legacy single `author`. Each name hovers to
@@ -12,7 +11,7 @@ export function AuthorPlates({ entry }: { entry: any }) {
       : [];
   const list = authors.length ? authors : [{ name: "—" }];
   const label = authors.length > 1 ? "Authors:" : "Author:";
-  const categoryColor = colorForCategory(entry.category);
+  const categoryColor = entry.categoryColor ?? "var(--tool-link)";
 
   const valueStyle: CSSProperties = {
     fontFamily: "var(--font-display)",

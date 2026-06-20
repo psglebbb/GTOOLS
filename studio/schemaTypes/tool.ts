@@ -1,15 +1,5 @@
 import { defineField, defineType } from "sanity";
 
-// Big categories a box can live in. "news" is just one of them.
-const CATEGORIES = [
-  { title: "NEWS", value: "news" },
-  { title: "Alternative Software", value: "alt" },
-  { title: "FONTS", value: "fonts" },
-  { title: "SMALL-TECH", value: "small" },
-  { title: "BIG-TECH", value: "big" },
-  { title: "WEB", value: "web" },
-];
-
 // How the box renders: a title link, a picture, or a picture with the title
 // overlaid in difference blend mode.
 const DISPLAY_MODES = [
@@ -39,8 +29,8 @@ export const toolSchema = defineType({
     defineField({
       name: "category",
       title: "Big Category",
-      type: "string",
-      options: { list: CATEGORIES, layout: "radio" },
+      type: "reference",
+      to: [{ type: "category" }],
       validation: (Rule) => Rule.required(),
     }),
     defineField({
@@ -125,6 +115,6 @@ export const toolSchema = defineType({
     }),
   ],
   preview: {
-    select: { title: "title", subtitle: "category", media: "featureImage" },
+    select: { title: "title", subtitle: "category.title", media: "featureImage" },
   },
 });

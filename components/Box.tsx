@@ -4,7 +4,6 @@ import { urlFor } from "@/sanity/lib/client";
 import { Tag } from "./Tag";
 import { AuthorPlates } from "./AuthorPlates";
 import { colorForTagInGroup } from "./tagColors";
-import { colorForCategory } from "./gtoolsData";
 import { chipKey, type FilterChip } from "./FilterBar";
 
 // One box for both tools and news. Three display modes:
@@ -22,7 +21,7 @@ export function Box({
 }) {
   const mode: "title" | "picture" | "pictureTitle" =
     entry.displayMode ?? (entry.featureImage ? "picture" : "title");
-  const categoryColor = colorForCategory(entry.category);
+  const categoryColor = entry.categoryColor ?? "var(--tool-link)";
   const displayUrl = formatUrl(entry.url ?? "");
   const imageUrl = entry.featureImage ? urlFor(entry.featureImage).width(840).url() : null;
   const dims = entry.imgDims; // { width, height, aspectRatio } from Sanity

@@ -8,21 +8,19 @@ export interface Category {
   outline?: boolean;
 }
 
-// The 7 big categories. `news` → news block; `authors` → author list;
-// every other id → tool block, filtered by `tool.category`.
-export const CATEGORIES: Category[] = [
-  { id: "news",    label: "NEWS",                 color: "var(--cat-news)" },
-  { id: "alt",     label: "Alternative Software", color: "var(--cat-alt-software)" },
-  { id: "fonts",   label: "FONTS",                color: "var(--cat-fonts)" },
-  { id: "small",   label: "SMALL-TECH",           color: "var(--cat-small-tech)" },
-  { id: "big",     label: "BIG-TECH",             color: "var(--cat-big-tech)" },
-  { id: "web",     label: "WEB",                  color: "var(--cat-web)" },
-  { id: "authors", label: "ALL AUTHORS",          color: "transparent", outline: true },
-];
+// The big categories now come from Sanity (CATEGORIES_QUERY). `authors` is not a
+// real category — it's a computed view (the All-Authors column), appended to the
+// fetched list client-side so it shows up as the last column.
+export const AUTHORS_CATEGORY: Category = {
+  id: "authors",
+  label: "ALL AUTHORS",
+  color: "transparent",
+  outline: true,
+};
 
-// The display colour of a big category, by id (used e.g. for the tool-link hover).
-export function colorForCategory(catId: string): string {
-  return CATEGORIES.find((c) => c.id === catId)?.color ?? "var(--tool-link)";
+// Fetched categories + the synthetic Authors column.
+export function withAuthorsColumn(categories: Category[]): Category[] {
+  return [...categories, AUTHORS_CATEGORY];
 }
 
 export interface TagLike { group: string; value: string; color?: string; }

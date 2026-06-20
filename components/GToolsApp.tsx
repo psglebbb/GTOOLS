@@ -7,12 +7,13 @@ import { FilterBar } from "./FilterBar";
 import { CategoryBody } from "./CategoryBody";
 import { Footer } from "./Footer";
 import { DesktopColumns } from "./DesktopColumns";
-import { CATEGORIES } from "./gtoolsData";
+import { withAuthorsColumn, type Category } from "./gtoolsData";
 import { chipKey, type FilterChip } from "./FilterBar";
 
 interface Props {
   news: any[];
   tools: any[];
+  categories: Category[];
 }
 
 // Switches to the desktop horizontal-column layout at >= 700px.
@@ -66,7 +67,9 @@ function RotateNotice() {
   );
 }
 
-export function GToolsApp({ news, tools }: Props) {
+export function GToolsApp({ news, tools, categories: fetchedCategories }: Props) {
+  // Sanity-driven big categories + the synthetic All-Authors column.
+  const categories = withAuthorsColumn(fetchedCategories);
   const [activeCategory, setActiveCategory] = useState("news");
   const [footerMode, setFooterMode] = useState<"closed" | "info">("closed");
   const [lang, setLang] = useState<"EN" | "DE">("EN");
@@ -116,10 +119,10 @@ export function GToolsApp({ news, tools }: Props) {
     const dy = t.clientY - s.y;
     // Only act on a deliberate, mostly-horizontal swipe (don't hijack vertical scroll).
     if (Math.abs(dx) < 50 || Math.abs(dx) < Math.abs(dy) * 1.5) return;
-    const idx = CATEGORIES.findIndex((c) => c.id === activeCategory);
+    const idx = categories.findIndex((c) => c.id === activeCategory);
     const next = dx < 0 ? idx + 1 : idx - 1;
-    if (next < 0 || next >= CATEGORIES.length) return;
-    selectCategory(CATEGORIES[next].id);
+    if (next < 0 || next >= categories.length) return;
+    selectCategory(categories[next].id);
     window.scrollTo({ top: 0 });
   };
 
@@ -133,6 +136,7 @@ export function GToolsApp({ news, tools }: Props) {
       <DesktopColumns
         news={news}
         tools={tools}
+        categories={categories}
         activeCategory={activeCategory}
         onSelectCategory={selectCategory}
         onSelectCategoryWithTag={selectCategoryWithTag}
@@ -177,7 +181,7 @@ export function GToolsApp({ news, tools }: Props) {
       >
         <Logo />
         <ClosedMenu
-          categories={CATEGORIES}
+          categories={categories}
           activeId={activeCategory}
           onSelect={selectCategory}
         />

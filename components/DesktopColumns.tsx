@@ -1,7 +1,7 @@
 "use client";
 
 import { useRef } from "react";
-import { CATEGORIES, categoryTags } from "./gtoolsData";
+import { categoryTags, type Category } from "./gtoolsData";
 import { ClosedMenu } from "./ClosedMenu";
 import { FilterBar, type FilterChip } from "./FilterBar";
 import { CategoryBody } from "./CategoryBody";
@@ -14,6 +14,7 @@ const COL = "var(--col-desktop)";
 interface Props {
   news: any[];
   tools: any[];
+  categories: Category[];
   activeCategory: string;
   onSelectCategory: (id: string) => void;
   onSelectCategoryWithTag: (id: string, chip: FilterChip) => void;
@@ -26,7 +27,7 @@ interface Props {
 }
 
 export function DesktopColumns({
-  news, tools, activeCategory, onSelectCategory, onSelectCategoryWithTag, selectedTags, onToggleTag,
+  news, tools, categories, activeCategory, onSelectCategory, onSelectCategoryWithTag, selectedTags, onToggleTag,
   footerMode, lang, onFooterTab, onLangChange,
 }: Props) {
   const stripRef = useRef<HTMLDivElement>(null);
@@ -47,7 +48,7 @@ export function DesktopColumns({
     if (footerMode === "info") onFooterTab("closed");
   }
 
-  const closedCats = CATEGORIES.filter((c) => c.id !== activeCategory);
+  const closedCats = categories.filter((c) => c.id !== activeCategory);
 
   return (
     <div style={{ position: "fixed", inset: 0, background: "var(--bg)", overflow: "hidden" }}>
@@ -90,7 +91,7 @@ export function DesktopColumns({
           }}
         >
           <div style={{ position: "sticky", top: 0, zIndex: 4, background: "var(--bg)", paddingBottom: "var(--gap-block)", display: "flex", flexDirection: "column", gap: "var(--gap-block)" }}>
-            <ClosedMenu categories={CATEGORIES} activeId={activeCategory} onSelect={onSelectCategory} rowH={38} overlap={30} />
+            <ClosedMenu categories={categories} activeId={activeCategory} onSelect={onSelectCategory} rowH={38} overlap={30} />
             <FilterBar activeCategory={activeCategory} tools={tools} news={news} selected={selectedTags} onToggle={onToggleTag} />
           </div>
           <CategoryBody activeCategory={activeCategory} news={news} tools={tools} selectedTags={selectedTags} onToggleTag={onToggleTag} />
