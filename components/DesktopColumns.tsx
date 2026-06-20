@@ -1,10 +1,11 @@
 "use client";
 
 import { useRef } from "react";
-import { categoryTags, type Category } from "./gtoolsData";
+import { categoryTags, authorsList, type Category } from "./gtoolsData";
 import { ClosedMenu } from "./ClosedMenu";
 import { FilterBar, type FilterChip } from "./FilterBar";
 import { CategoryBody } from "./CategoryBody";
+import { AuthorList } from "./AuthorList";
 import { Tag } from "./Tag";
 import { Footer } from "./Footer";
 import { colorForTagInGroup } from "./tagColors";
@@ -97,9 +98,12 @@ export function DesktopColumns({
           <CategoryBody activeCategory={activeCategory} news={news} tools={tools} selectedTags={selectedTags} onToggleTag={onToggleTag} />
         </div>
 
-        {/* Closed columns — header + stapled real tags for the category */}
+        {/* Closed columns — header + stapled real tags. Authors is special: it
+            always shows the plain name list (each name links straight to the
+            author's site — one click, no need to open the column first). */}
         {closedCats.map((cat) => {
-          const tags = categoryTags(cat.id, tools, news);
+          const isAuthors = cat.id === "authors";
+          const tags = isAuthors ? [] : categoryTags(cat.id, tools, news);
           return (
             <div
               key={cat.id}
@@ -115,22 +119,27 @@ export function DesktopColumns({
               }}
             >
               <Tag group="Category" value={cat.label} color={cat.color} outline={cat.outline} width="100%" minHeight={38} valueCase="upper" />
-              <div style={{ display: "flex", flexDirection: "column", gap: "var(--gap-row)", alignItems: "flex-start" }}>
-                {tags.map((t, i) => (
-                  <div
-                    key={i}
-                    style={{ cursor: "pointer" }}
-                    onClick={(e) => {
-                      e.stopPropagation(); // don't also trigger the column's plain activate
-                      // Author staples just open the All-Authors view (no tag filter there).
-                      if (cat.id === "authors") { activate(cat.id); return; }
-                      activateWithTag(cat.id, { group: t.group, value: t.value, color: t.color });
-                    }}
-                  >
-                    <Tag group={t.group} value={t.value} color={colorForTagInGroup(t.group, t.value, t.color)} width="fit-content" minHeight={38} multiline valueCase={t.group === "AUTHOR" || t.group === "EVENT" ? undefined : "title"} />
-                  </div>
-                ))}
-              </div>
+              {isAuthors ? (
+                // Name clicks open the site (new tab); stop them from also activating the column.
+                <div onClick={(e) => e.stopPropagation()}>
+                  <AuthorList authors={authorsList(tools, news)} />
+                </div>
+              ) : (
+                <div style={{ display: "flex", flexDirection: "column", gap: "var(--gap-row)", alignItems: "flex-start" }}>
+                  {tags.map((t, i) => (
+                    <div
+                      key={i}
+                      style={{ cursor: "pointer" }}
+                      onClick={(e) => {
+                        e.stopPropagation(); // don't also trigger the column's plain activate
+                        activateWithTag(cat.id, { group: t.group, value: t.value, color: t.color });
+                      }}
+                    >
+                      <Tag group={t.group} value={t.value} color={colorForTagInGroup(t.group, t.value, t.color)} width="fit-content" minHeight={38} multiline valueCase={t.group === "AUTHOR" || t.group === "EVENT" ? undefined : "title"} />
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
           );
         })}
