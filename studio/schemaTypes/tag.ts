@@ -1,29 +1,16 @@
+import { createElement } from "react";
 import { defineField, defineType } from "sanity";
+import { TagColorInput } from "./components/TagColorInput";
 
-const TAG_GROUPS = [
-  { title: "ACCESS", value: "ACCESS" },
-  { title: "LICENSE", value: "LICENSE" },
-  { title: "EXPORT", value: "EXPORT" },
-  { title: "PLATFORM", value: "PLATFORM" },
-  { title: "TYPO", value: "TYPO" },
-  { title: "ROOTS", value: "ROOTS" },
-  { title: "BROWSER", value: "BROWSER" },
-  { title: "AUTHOR", value: "AUTHOR" },
-  { title: "EVENT", value: "EVENT" },
-];
-
+// Tags are now shared documents (one per value), referenced from boxes: on a box
+// you pick an existing tag or create a new one, and it joins the shared pool for
+// next time. `group` points at a tagGroup document; `color` is auto-filled from
+// that group's base hue (see TagColorInput) and stays hand-editable.
 export const tagSchema = defineType({
   name: "tag",
   title: "Tag",
-  type: "object",
+  type: "document",
   fields: [
-    defineField({
-      name: "group",
-      title: "Group",
-      type: "string",
-      options: { list: TAG_GROUPS },
-      validation: (Rule) => Rule.required(),
-    }),
     defineField({
       name: "value",
       title: "Value",
@@ -31,12 +18,35 @@ export const tagSchema = defineType({
       validation: (Rule) => Rule.required(),
     }),
     defineField({
+      name: "group",
+      title: "Group",
+      type: "reference",
+      to: [{ type: "tagGroup" }],
+      validation: (Rule) => Rule.required(),
+    }),
+    defineField({
       name: "color",
-      title: "CSS color variable",
+      title: "Colour (auto from group)",
       type: "string",
+      components: { input: TagColorInput },
     }),
   ],
   preview: {
-    select: { title: "value", subtitle: "group" },
+    select: { title: "value", group: "group.code", color: "color" },
+    prepare({ title, group, color }) {
+      return {
+        title,
+        subtitle: group,
+        media: () =>
+          createElement("span", {
+            style: {
+              display: "block",
+              width: "100%",
+              height: "100%",
+              background: color || "transparent",
+            },
+          }),
+      };
+    },
   },
 });

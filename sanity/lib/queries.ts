@@ -26,10 +26,10 @@ export const ALL_TOOLS_QUERY = `
     functionLabel,
     functionValue,
     description,
-    tags[] {
-      group,
-      value,
-      color
+    tags[]{
+      "group": coalesce(@->group->code, group),
+      "value": coalesce(@->value, value),
+      "color": coalesce(@->color, color)
     },
     editedAt
   }
@@ -46,10 +46,10 @@ export const ALL_NEWS_QUERY = `
     functionLabel,
     functionValue,
     description,
-    tags[] {
-      group,
-      value,
-      color
+    tags[]{
+      "group": coalesce(@->group->code, group),
+      "value": coalesce(@->value, value),
+      "color": coalesce(@->color, color)
     },
     editedAt
   }
@@ -68,7 +68,7 @@ export const TOOLS_BY_CATEGORY_QUERY = `
     functionLabel,
     functionValue,
     description,
-    tags[] { group, value, color },
+    tags[]{ "group": coalesce(@->group->code, group), "value": coalesce(@->value, value), "color": coalesce(@->color, color) },
     editedAt
   }
 `;
@@ -95,7 +95,7 @@ export const TOOL_BY_SLUG_QUERY = `
     functionLabel,
     functionValue,
     description,
-    tags[] { group, value, color },
+    tags[]{ "group": coalesce(@->group->code, group), "value": coalesce(@->value, value), "color": coalesce(@->color, color) },
     editedAt
   }
 `;
@@ -111,7 +111,7 @@ export const NEWS_BY_SLUG_QUERY = `
     functionLabel,
     functionValue,
     description,
-    tags[] { group, value, color },
+    tags[]{ "group": coalesce(@->group->code, group), "value": coalesce(@->value, value), "color": coalesce(@->color, color) },
     editedAt
   }
 `;

@@ -104,8 +104,10 @@ export const toolSchema = defineType({
     defineField({
       name: "tags",
       title: "Tags",
+      description:
+        "Pick from existing tags or create a new one — new tags join the shared pool.",
       type: "array",
-      of: [{ type: "tag" }],
+      of: [{ type: "reference", to: [{ type: "tag" }] }],
     }),
     defineField({
       name: "editedAt",
