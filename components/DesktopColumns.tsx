@@ -49,7 +49,12 @@ export function DesktopColumns({
     if (footerMode === "info") onFooterTab("closed");
   }
 
-  const closedCats = categories.filter((c) => c.id !== activeCategory);
+  // The closed-column strip honours the per-category "show in main columns"
+  // toggle; the burger (ClosedMenu) below honours "show in burger menu".
+  const closedCats = categories.filter(
+    (c) => c.id !== activeCategory && c.showInColumns !== false,
+  );
+  const burgerCats = categories.filter((c) => c.showInBurger !== false);
 
   return (
     <div style={{ position: "fixed", inset: 0, background: "var(--bg)", overflow: "hidden" }}>
@@ -92,7 +97,7 @@ export function DesktopColumns({
           }}
         >
           <div style={{ position: "sticky", top: 0, zIndex: 4, background: "var(--bg)", paddingBottom: "var(--gap-block)", display: "flex", flexDirection: "column", gap: "var(--gap-block)" }}>
-            <ClosedMenu categories={categories} activeId={activeCategory} onSelect={onSelectCategory} rowH={38} overlap={30} />
+            <ClosedMenu categories={burgerCats} activeId={activeCategory} onSelect={onSelectCategory} rowH={38} overlap={30} />
             <FilterBar activeCategory={activeCategory} tools={tools} news={news} selected={selectedTags} onToggle={onToggleTag} />
           </div>
           <CategoryBody activeCategory={activeCategory} news={news} tools={tools} selectedTags={selectedTags} onToggleTag={onToggleTag} />

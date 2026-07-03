@@ -6,7 +6,9 @@ export const CATEGORIES_QUERY = `
   *[_type == "category"] | order(order asc) {
     "id": slug.current,
     "label": title,
-    color
+    color,
+    "showInColumns": coalesce(showInColumns, true),
+    "showInBurger": coalesce(showInBurger, true)
   }
 `;
 

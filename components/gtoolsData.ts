@@ -6,6 +6,11 @@ export interface Category {
   label: string;
   color: string;
   outline?: boolean;
+  // Per-category placement toggles (default true when absent). `showInColumns`
+  // = appears in the desktop column strip; `showInBurger` = appears in the
+  // stacked burger menu (mobile + the selector atop the desktop column).
+  showInColumns?: boolean;
+  showInBurger?: boolean;
 }
 
 // The big categories now come from Sanity (CATEGORIES_QUERY). `authors` is not a

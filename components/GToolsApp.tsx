@@ -70,6 +70,9 @@ function RotateNotice() {
 export function GToolsApp({ news, tools, categories: fetchedCategories }: Props) {
   // Sanity-driven big categories + the synthetic All-Authors column.
   const categories = withAuthorsColumn(fetchedCategories);
+  // The burger menu (and mobile swipe nav) can be a different subset than the
+  // columns, via each category's per-surface toggle. Authors has no toggle → in.
+  const burgerCategories = categories.filter((c) => c.showInBurger !== false);
   const [activeCategory, setActiveCategory] = useState("news");
   const [footerMode, setFooterMode] = useState<"closed" | "info">("closed");
   const [lang, setLang] = useState<"EN" | "DE">("EN");
@@ -119,10 +122,11 @@ export function GToolsApp({ news, tools, categories: fetchedCategories }: Props)
     const dy = t.clientY - s.y;
     // Only act on a deliberate, mostly-horizontal swipe (don't hijack vertical scroll).
     if (Math.abs(dx) < 50 || Math.abs(dx) < Math.abs(dy) * 1.5) return;
-    const idx = categories.findIndex((c) => c.id === activeCategory);
+    // Mobile swipe cycles the burger-visible categories (the mobile nav set).
+    const idx = burgerCategories.findIndex((c) => c.id === activeCategory);
     const next = dx < 0 ? idx + 1 : idx - 1;
-    if (next < 0 || next >= categories.length) return;
-    selectCategory(categories[next].id);
+    if (next < 0 || next >= burgerCategories.length) return;
+    selectCategory(burgerCategories[next].id);
     window.scrollTo({ top: 0 });
   };
 
@@ -181,7 +185,7 @@ export function GToolsApp({ news, tools, categories: fetchedCategories }: Props)
       >
         <Logo />
         <ClosedMenu
-          categories={categories}
+          categories={burgerCategories}
           activeId={activeCategory}
           onSelect={selectCategory}
         />

@@ -41,6 +41,21 @@ export const categorySchema = defineType({
       type: "number",
       validation: (Rule) => Rule.required(),
     }),
+    defineField({
+      name: "showInColumns",
+      title: "Show in main columns",
+      description: "Appears as a column in the desktop column strip. On = default.",
+      type: "boolean",
+      initialValue: true,
+    }),
+    defineField({
+      name: "showInBurger",
+      title: "Show in burger menu",
+      description:
+        "Appears in the stacked burger menu (mobile, and the selector at the top of the desktop column). On = default.",
+      type: "boolean",
+      initialValue: true,
+    }),
   ],
   orderings: [
     { title: "Order", name: "orderAsc", by: [{ field: "order", direction: "asc" }] },
