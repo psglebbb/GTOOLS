@@ -79,6 +79,9 @@ export function generateTone(
   if (typeof index === "number") {
     const i = ((index % TONE_RAMP.length) + TONE_RAMP.length) % TONE_RAMP.length;
     lV = TONE_RAMP[i];
+    // Each time the ramp wraps (a group has more tags than steps), rotate the
+    // hue a touch so tag 6, 11, … stay distinct from tag 1 rather than repeating.
+    hV = base.hue + Math.floor(index / TONE_RAMP.length) * 7;
   }
   if (jitter) {
     hV = base.hue + (Math.random() - 0.5) * 12;
