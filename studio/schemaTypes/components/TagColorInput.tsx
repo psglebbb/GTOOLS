@@ -25,19 +25,25 @@ export function TagColorInput(props: StringInputProps) {
       if (!groupRef) return;
       setBusy(true);
       try {
+        // Fetch the group's base hue plus how many tags it already has, so a
+        // freshly-added tag lands on the next step of the group's tonal ramp
+        // (distinct from its siblings) rather than repeating the base tone.
         const group = await client.fetch(
-          `*[_id == $id][0]{ baseHue, baseSat, baseLightness }`,
+          `*[_id == $id][0]{
+            baseHue, baseSat, baseLightness,
+            "count": count(*[_type == "tag" && group._ref == $id])
+          }`,
           { id: groupRef },
         );
         if (group?.baseHue == null) return;
-        const hex = generateTone(
-          {
-            hue: group.baseHue,
-            sat: group.baseSat,
-            lightness: group.baseLightness,
-          },
-          jitter,
-        );
+        const base = {
+          hue: group.baseHue,
+          sat: group.baseSat,
+          lightness: group.baseLightness,
+        };
+        const hex = jitter
+          ? generateTone(base, { jitter: true })
+          : generateTone(base, { index: group.count ?? 0 });
         onChange(set(hex));
       } finally {
         setBusy(false);

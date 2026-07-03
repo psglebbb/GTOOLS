@@ -54,18 +54,38 @@ export interface GroupBase {
   lightness?: number;
 }
 
-// A single tag tone for a group's base. With `jitter` (the ↺ button) the hue and
-// saturation are nudged so tags in a group read as a family rather than identical
-// chips; without it the result is deterministic. Lightness is raised in steps
-// until the tone clears WCAG AA on #020202, mirroring the original generator.
-export function generateTone(base: GroupBase, jitter = false): string {
+// The lightness ramp each group is spread across, so tags in one group share a
+// hue but read as distinct tones (mirrors the 5 swatches per group in the
+// original generator).
+export const TONE_RAMP = [78, 73, 68, 63, 58];
+
+// A tag tone for a group's base hue. Three modes give tags in a group a diverse
+// yet coherent family instead of identical chips:
+//   • index  — deterministic: pick the next step on the tonal ramp (used on
+//              auto-fill, indexed by how many tags the group already has).
+//   • jitter — the ↺ button: random ramp step + small hue/saturation nudge.
+//   • neither — the plain base tone.
+// Lightness is then raised until the tone clears WCAG AA on #020202.
+export function generateTone(
+  base: GroupBase,
+  opts: { index?: number; jitter?: boolean } = {},
+): string {
+  const { index, jitter } = opts;
   const s0 = base.sat ?? 65;
-  const l0 = base.lightness ?? 68;
-  const hV = jitter ? base.hue + (Math.random() - 0.5) * 12 : base.hue;
-  const sV = jitter
-    ? Math.min(100, Math.max(20, s0 + (Math.random() - 0.5) * 18))
-    : s0;
-  let lV = l0;
+  let hV = base.hue;
+  let sV = s0;
+  let lV = base.lightness ?? 68;
+
+  if (typeof index === "number") {
+    const i = ((index % TONE_RAMP.length) + TONE_RAMP.length) % TONE_RAMP.length;
+    lV = TONE_RAMP[i];
+  }
+  if (jitter) {
+    hV = base.hue + (Math.random() - 0.5) * 12;
+    sV = Math.min(100, Math.max(20, s0 + (Math.random() - 0.5) * 18));
+    lV = TONE_RAMP[Math.floor(Math.random() * TONE_RAMP.length)];
+  }
+
   let hex = hslToHex(hV, sV, lV);
   let t = 0;
   while (wcagLevel(hex).level === "FAIL" && t++ < 20) {
