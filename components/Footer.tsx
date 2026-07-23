@@ -47,10 +47,13 @@ export function Footer({ mode, lang, onTabChange, onLangChange, content }: Props
   // Resolve editable content, falling back to the hardcoded defaults.
   const studioUrl = content?.studioUrl || DEFAULT_STUDIO_URL;
   const email = content?.email || DEFAULT_EMAIL;
-  const bodyText =
+  const rawBody =
     lang === "EN"
       ? content?.enText || DEFAULT_EN_TEXT
       : content?.deText || DEFAULT_DE_TEXT;
+  // Guarantee a separator between the text and the contact address, so an
+  // author who ends the text with ":" doesn't get the email glued to the colon.
+  const bodyText = /\s$/.test(rawBody) ? rawBody : rawBody + " ";
   const contactLinks = content?.contactLinks ?? [];
 
   return (
@@ -116,7 +119,7 @@ export function Footer({ mode, lang, onTabChange, onLangChange, content }: Props
           <a
             href={`mailto:${email}`}
             onClick={(e) => e.stopPropagation()}
-            style={{ color: "inherit", textDecoration: "underline" }}
+            style={{ color: "var(--accent-purple)", textDecoration: "underline" }}
           >
             {email}
           </a>
@@ -128,7 +131,7 @@ export function Footer({ mode, lang, onTabChange, onLangChange, content }: Props
                 target="_blank"
                 rel="noopener noreferrer"
                 onClick={(e) => e.stopPropagation()}
-                style={{ color: "inherit", textDecoration: "underline" }}
+                style={{ color: "var(--accent-purple)", textDecoration: "underline" }}
               >
                 {link.label}
               </a>
