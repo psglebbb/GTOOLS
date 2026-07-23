@@ -7,7 +7,7 @@ import { FilterBar, type FilterChip } from "./FilterBar";
 import { CategoryBody } from "./CategoryBody";
 import { AuthorList } from "./AuthorList";
 import { Tag } from "./Tag";
-import { Footer } from "./Footer";
+import { Footer, type FooterContent } from "./Footer";
 import { colorForTagInGroup } from "./tagColors";
 
 const COL = "var(--col-desktop)";
@@ -25,11 +25,12 @@ interface Props {
   lang: "EN" | "DE";
   onFooterTab: (m: "closed" | "info") => void;
   onLangChange: (l: "EN" | "DE") => void;
+  footer?: FooterContent | null;
 }
 
 export function DesktopColumns({
   news, tools, categories, activeCategory, onSelectCategory, onSelectCategoryWithTag, selectedTags, onToggleTag,
-  footerMode, lang, onFooterTab, onLangChange,
+  footerMode, lang, onFooterTab, onLangChange, footer,
 }: Props) {
   const stripRef = useRef<HTMLDivElement>(null);
 
@@ -152,7 +153,7 @@ export function DesktopColumns({
 
       {/* Fixed footer — bottom-left under the viewing column */}
       <div style={{ position: "fixed", left: 2, bottom: 2, width: COL, zIndex: 10 }}>
-        <Footer mode={footerMode} lang={lang} onTabChange={onFooterTab} onLangChange={onLangChange} />
+        <Footer mode={footerMode} lang={lang} onTabChange={onFooterTab} onLangChange={onLangChange} content={footer} />
       </div>
     </div>
   );

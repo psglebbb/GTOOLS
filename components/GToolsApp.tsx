@@ -5,7 +5,7 @@ import { Logo } from "./Logo";
 import { ClosedMenu } from "./ClosedMenu";
 import { FilterBar } from "./FilterBar";
 import { CategoryBody } from "./CategoryBody";
-import { Footer } from "./Footer";
+import { Footer, type FooterContent } from "./Footer";
 import { DesktopColumns } from "./DesktopColumns";
 import { withAuthorsColumn, type Category } from "./gtoolsData";
 import { chipKey, type FilterChip } from "./FilterBar";
@@ -14,6 +14,7 @@ interface Props {
   news: any[];
   tools: any[];
   categories: Category[];
+  footer?: FooterContent | null;
 }
 
 // Switches to the desktop horizontal-column layout at >= 700px.
@@ -67,7 +68,7 @@ function RotateNotice() {
   );
 }
 
-export function GToolsApp({ news, tools, categories: fetchedCategories }: Props) {
+export function GToolsApp({ news, tools, categories: fetchedCategories, footer }: Props) {
   // Sanity-driven big categories + the synthetic All-Authors column.
   const categories = withAuthorsColumn(fetchedCategories);
   // The burger menu (and mobile swipe nav) can be a different subset than the
@@ -150,6 +151,7 @@ export function GToolsApp({ news, tools, categories: fetchedCategories }: Props)
         lang={lang}
         onFooterTab={setFooterMode}
         onLangChange={setLang}
+        footer={footer}
       />
     );
   }
@@ -231,6 +233,7 @@ export function GToolsApp({ news, tools, categories: fetchedCategories }: Props)
           lang={lang}
           onTabChange={setFooterMode}
           onLangChange={setLang}
+          content={footer}
         />
       </div>
     </div>

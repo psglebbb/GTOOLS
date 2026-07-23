@@ -3,6 +3,7 @@ import { categorySchema } from "./category";
 import { tagGroupSchema } from "./tagGroup";
 import { tagSchema } from "./tag";
 import { toolSchema } from "./tool";
+import { siteSettingsSchema } from "./siteSettings";
 
 // One unified box type (`tool`) covers both tool and news entries; "news" is a
 // big category on the box, not a separate document type. Big categories are
@@ -15,4 +16,5 @@ export const schemaTypes = [
   tagGroupSchema,
   tagSchema,
   toolSchema,
+  siteSettingsSchema,
 ];

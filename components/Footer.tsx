@@ -1,17 +1,30 @@
 "use client";
 
-const STUDIO_URL = "https://www.o-g-o.studio/";
-const EMAIL = "hio@o-g-o.studio";
+// Defaults — used verbatim when the Sanity "Footer / Info" singleton is empty
+// or hasn't been created yet, so the footer keeps working before it's filled in.
+const DEFAULT_STUDIO_URL = "https://www.o-g-o.studio/";
+const DEFAULT_EMAIL = "hio@o-g-o.studio";
 
-const EN_TEXT = `The online collection is presented as a curated series of links, each accompanied by the author's name, the tool's function, its general category, and a concise introductory description. The tools were gathered from internet archives, online communities, social media, and creative coding platforms.\n\nThe Graphic Tools Museum (GTOOLS)\nis based in Linz, Austria.\n\nFor further information:\n`;
+const DEFAULT_EN_TEXT = `The online collection is presented as a curated series of links, each accompanied by the author's name, the tool's function, its general category, and a concise introductory description. The tools were gathered from internet archives, online communities, social media, and creative coding platforms.\n\nThe Graphic Tools Museum (GTOOLS)\nis based in Linz, Austria.\n\nFor further information:\n`;
 
-const DE_TEXT = `Die Online-Sammlung wird als kuratierte Reihe von Links präsentiert, jeweils mit Namen der Autor*innen, der Funktion des Tools, einer allgemeinen Kategorie und einer kurzen Beschreibung. Die Tools stammen aus Internet-Archiven, Online-Communities, sozialen Medien und Creative-Coding-Plattformen.\n\nDas Graphic Tools Museum (GTOOLS)\nhat seinen Sitz in Linz, Österreich.\n\nFür weitere Informationen:\n`;
+const DEFAULT_DE_TEXT = `Die Online-Sammlung wird als kuratierte Reihe von Links präsentiert, jeweils mit Namen der Autor*innen, der Funktion des Tools, einer allgemeinen Kategorie und einer kurzen Beschreibung. Die Tools stammen aus Internet-Archiven, Online-Communities, sozialen Medien und Creative-Coding-Plattformen.\n\nDas Graphic Tools Museum (GTOOLS)\nhat seinen Sitz in Linz, Österreich.\n\nFür weitere Informationen:\n`;
+
+// Shape of the Sanity "Footer / Info" singleton (all fields optional — the
+// Footer falls back to the DEFAULT_* constants for anything missing).
+export interface FooterContent {
+  deText?: string | null;
+  enText?: string | null;
+  email?: string | null;
+  studioUrl?: string | null;
+  contactLinks?: { label: string; url: string }[] | null;
+}
 
 interface Props {
   mode: "closed" | "info";
   lang: "EN" | "DE";
   onTabChange: (m: "closed" | "info") => void;
   onLangChange: (l: "EN" | "DE") => void;
+  content?: FooterContent | null;
 }
 
 function Tab({ label, active, onClick }: { label: string; active: boolean; onClick: () => void }) {
@@ -28,8 +41,17 @@ function Tab({ label, active, onClick }: { label: string; active: boolean; onCli
   );
 }
 
-export function Footer({ mode, lang, onTabChange, onLangChange }: Props) {
+export function Footer({ mode, lang, onTabChange, onLangChange, content }: Props) {
   const isInfo = mode === "info";
+
+  // Resolve editable content, falling back to the hardcoded defaults.
+  const studioUrl = content?.studioUrl || DEFAULT_STUDIO_URL;
+  const email = content?.email || DEFAULT_EMAIL;
+  const bodyText =
+    lang === "EN"
+      ? content?.enText || DEFAULT_EN_TEXT
+      : content?.deText || DEFAULT_DE_TEXT;
+  const contactLinks = content?.contactLinks ?? [];
 
   return (
     <div
@@ -52,7 +74,7 @@ export function Footer({ mode, lang, onTabChange, onLangChange }: Props) {
     >
       {/* Copyright row — links to the studio */}
       <a
-        href={STUDIO_URL}
+        href={studioUrl}
         target="_blank"
         rel="noopener noreferrer"
         onClick={(e) => e.stopPropagation()}
@@ -90,17 +112,31 @@ export function Footer({ mode, lang, onTabChange, onLangChange }: Props) {
         pointerEvents: isInfo ? "auto" : "none",
       }}>
         <p style={{ fontFamily: "var(--font-display)", fontWeight: 700, fontSize: 14, lineHeight: "16px", letterSpacing: "-0.04em", color: "rgb(0,0,0)", whiteSpace: "pre-line", margin: 0 }}>
-          {lang === "EN" ? EN_TEXT : DE_TEXT}
+          {bodyText}
           <a
-            href={`mailto:${EMAIL}`}
+            href={`mailto:${email}`}
             onClick={(e) => e.stopPropagation()}
             style={{ color: "inherit", textDecoration: "underline" }}
           >
-            {EMAIL}
+            {email}
           </a>
+          {contactLinks.map((link) => (
+            <span key={link.url}>
+              {"\n"}
+              <a
+                href={link.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={(e) => e.stopPropagation()}
+                style={{ color: "inherit", textDecoration: "underline" }}
+              >
+                {link.label}
+              </a>
+            </span>
+          ))}
         </p>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-          <a href={STUDIO_URL} target="_blank" rel="noopener noreferrer" onClick={(e) => e.stopPropagation()} style={{ display: "inline-flex" }}>
+          <a href={studioUrl} target="_blank" rel="noopener noreferrer" onClick={(e) => e.stopPropagation()} style={{ display: "inline-flex" }}>
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img src="/assets/OGO_GTOOLS.svg" alt="OGO — GTOOLS" style={{ height: 30, width: "auto" }} />
           </a>

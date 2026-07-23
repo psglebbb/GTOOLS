@@ -54,6 +54,14 @@ const structure: StructureResolver = async (S, context) => {
   return S.list()
     .title('Content')
     .items([
+      // Singleton: editable Footer / Info content (DE/EN text, contact links).
+      S.listItem()
+        .id('siteSettings')
+        .title('Footer / Info')
+        .child(
+          S.document().schemaType('siteSettings').documentId('siteSettings'),
+        ),
+      S.divider(),
       S.listItem()
         .title('Big Categories')
         .child(S.documentTypeList('category').title('Big Categories')),

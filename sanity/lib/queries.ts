@@ -117,3 +117,15 @@ export const NEWS_BY_SLUG_QUERY = `
     editedAt
   }
 `;
+
+// Footer / Info singleton — editable DE/EN text + contact links. Returns null
+// if the doc hasn't been created yet; the Footer falls back to its defaults.
+export const SITE_SETTINGS_QUERY = `
+  *[_type == "siteSettings"][0] {
+    deText,
+    enText,
+    email,
+    studioUrl,
+    contactLinks[]{ label, url }
+  }
+`;
