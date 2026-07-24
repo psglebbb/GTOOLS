@@ -6,6 +6,7 @@ const DISPLAY_MODES = [
   { title: "Title / URL", value: "title" },
   { title: "Picture", value: "picture" },
   { title: "Picture + Title (difference)", value: "pictureTitle" },
+  { title: "Live Preview (embed)", value: "live" },
 ];
 
 export const toolSchema = defineType({
@@ -55,15 +56,27 @@ export const toolSchema = defineType({
         }),
     }),
     defineField({
+      name: "embedUrl",
+      title: "Live-Preview URL (optional)",
+      description:
+        "Nur für 'Live Preview'. Leer lassen = benutzt den Titel-Link oben. Hinweis: manche Seiten verbieten das Einbetten und bleiben dann leer — solche Boxen besser als 'Picture' zeigen.",
+      type: "url",
+      hidden: ({ parent }) => parent?.displayMode !== "live",
+    }),
+    defineField({
       name: "featureImage",
       title: "Picture",
+      description:
+        "Für 'Live Preview' optional: dient als Vorschaubild, bevor man die Live-Ansicht startet.",
       type: "image",
       options: { hotspot: true },
+      // Shown for every mode except plain title. In live mode it's an optional poster.
       hidden: ({ parent }) => parent?.displayMode === "title",
       validation: (Rule) =>
         Rule.custom((value, context) => {
           const mode = (context.parent as { displayMode?: string })?.displayMode;
-          if (mode !== "title" && !value) return "Picture is required for picture display modes";
+          if ((mode === "picture" || mode === "pictureTitle") && !value)
+            return "Picture is required for picture display modes";
           return true;
         }),
     }),

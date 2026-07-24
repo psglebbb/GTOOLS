@@ -19,6 +19,7 @@ export const ALL_TOOLS_QUERY = `
     title,
     slug,
     url,
+    embedUrl,
     "category": category->slug.current,
     "categoryColor": category->color,
     displayMode,

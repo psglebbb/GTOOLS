@@ -3,13 +3,15 @@ import Image from "next/image";
 import { urlFor } from "@/sanity/lib/client";
 import { Tag } from "./Tag";
 import { AuthorPlates } from "./AuthorPlates";
+import { LivePreview } from "./LivePreview";
 import { colorForTagInGroup } from "./tagColors";
 import { chipKey, type FilterChip } from "./FilterBar";
 
-// One box for both tools and news. Three display modes:
+// One box for both tools and news. Display modes:
 //   title        → the big WWW. URL link
 //   picture      → the feature image
 //   pictureTitle → the image with the title overlaid in difference blend
+//   live         → a live 16:9 embed of the tool's own site (click-to-activate)
 export function Box({
   entry,
   selectedTags = [],
@@ -19,15 +21,20 @@ export function Box({
   selectedTags?: FilterChip[];
   onToggleTag?: (chip: FilterChip) => void;
 }) {
-  const mode: "title" | "picture" | "pictureTitle" =
+  const mode: "title" | "picture" | "pictureTitle" | "live" =
     entry.displayMode ?? (entry.featureImage ? "picture" : "title");
   const categoryColor = entry.categoryColor ?? "var(--tool-link)";
   const displayUrl = formatUrl(entry.url ?? "");
   const imageUrl = entry.featureImage ? urlFor(entry.featureImage).width(840).url() : null;
   const dims = entry.imgDims; // { width, height, aspectRatio } from Sanity
+  const embedUrl = entry.embedUrl || entry.url; // live-preview target (falls back to title link)
 
-  const showPicture = (mode === "picture" || mode === "pictureTitle") && imageUrl;
-  const showTitleSolo = mode === "title" && entry.url;
+  // Live embed only when we actually have a URL to frame; otherwise gracefully
+  // fall back to the feature image (if any) or the plain title link below.
+  const showLive = mode === "live" && embedUrl;
+  const showPicture =
+    (mode === "picture" || mode === "pictureTitle" || (mode === "live" && !embedUrl)) && imageUrl;
+  const showTitleSolo = (mode === "title" || (mode === "live" && !embedUrl && !imageUrl)) && entry.url;
   const overlayTitle = mode === "pictureTitle" && entry.url;
 
   return (
@@ -41,6 +48,17 @@ export function Box({
 
       {/* Author(s) */}
       <AuthorPlates entry={entry} />
+
+      {/* Live 16:9 embed of the tool's own site (click-to-activate) */}
+      {showLive && (
+        <LivePreview
+          url={embedUrl}
+          posterUrl={imageUrl}
+          title={entry.title}
+          displayUrl={displayUrl}
+          accent={categoryColor}
+        />
+      )}
 
       {/* Picture — optionally with the title overlaid in difference blend */}
       {showPicture && (
