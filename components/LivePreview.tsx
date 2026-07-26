@@ -2,28 +2,35 @@
 
 import { type CSSProperties } from "react";
 
-// A live, embedded 16:9 preview of the tool's own website. The iframe mounts
-// directly (no click-to-activate) but uses native lazy-loading, so off-screen
-// boxes in the active column don't all fetch at once. Boxes only render in the
-// active category column (closed desktop columns show tags, not boxes), so there
-// is no iframe fan-out across the whole site.
+// A live, embedded 16:9 preview of the tool's own website with the big WWW-URL
+// title layer permanently overlaid in difference blend — the same treatment as
+// the custom "Picture + Title" boxes. The site preview underneath is dimmed to
+// ~50% so the title always reads. The title is the click target (opens the real
+// site in a new tab); the iframe itself is non-interactive so it never traps
+// page scroll.
 //
-// The iframe is rendered at a "desktop" width and CSS-scaled down, so a narrow
-// column shows a shrunken live desktop view. It's kept non-interactive
-// (pointer-events: none) so it reads as a live preview and never traps the page
-// scroll; the ↗ button opens the real site in a new tab to actually use it.
+// The iframe mounts directly (native lazy-loading keeps off-screen boxes in the
+// active column from all fetching at once) and is rendered at a "desktop" width
+// then CSS-scaled into the 16:9 frame, so a narrow column shows a shrunken live
+// desktop view. Boxes only render in the active category column, so there is no
+// iframe fan-out across the site.
 //
 // Note: some sites send X-Frame-Options / CSP frame-ancestors and refuse to be
-// framed — those stay blank. Such boxes are better shown as a plain Picture;
-// that's an editorial choice in the Studio.
+// framed — those stay blank behind the title. Such boxes are better shown as a
+// plain Picture; that's an editorial choice in the Studio.
 const SCALE = 0.4; // iframe renders at 1/SCALE of the column width (~desktop)
+const PREVIEW_OPACITY = 0.5; // dim the live site so the title reads over it
 
 export function LivePreview({
   url,
+  linkUrl,
+  displayUrl,
   posterUrl,
   title,
 }: {
   url: string;
+  linkUrl?: string;
+  displayUrl: string;
   posterUrl?: string | null;
   title?: string;
 }) {
@@ -45,7 +52,7 @@ export function LivePreview({
         <img
           src={posterUrl}
           alt={title ?? "Preview"}
-          style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover" }}
+          style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", opacity: PREVIEW_OPACITY }}
         />
       )}
 
@@ -64,37 +71,39 @@ export function LivePreview({
           border: 0,
           transform: `scale(${SCALE})`,
           transformOrigin: "top left",
+          opacity: PREVIEW_OPACITY,
           pointerEvents: "none", // live but non-interactive → no scroll trap
         } as CSSProperties}
       />
 
-      {/* Open the real site in a new tab — the interactive entry point. */}
+      {/* Big WWW-URL title, permanently overlaid in difference blend — same logic
+          as the Picture + Title boxes. Clicking it opens the real site. */}
       <a
-        href={url}
+        href={linkUrl ?? url}
         target="_blank"
         rel="noopener noreferrer"
-        onClick={(e) => e.stopPropagation()}
-        title="Open in new tab"
+        className="tool-www"
         style={{
           position: "absolute",
-          top: 6,
-          right: 6,
+          inset: 0,
           zIndex: 2,
-          width: 22,
-          height: 22,
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
-          borderRadius: 6,
-          background: "rgba(0,0,0,0.55)",
+          fontFamily: "var(--font-display)",
+          fontWeight: 400,
+          letterSpacing: "-0.04em",
+          textAlign: "center",
+          textTransform: "uppercase",
+          whiteSpace: "pre-line",
+          wordBreak: "break-word",
+          padding: "8px",
           color: "#FFFFFF",
-          fontFamily: "var(--font-mono)",
-          fontSize: 12,
-          lineHeight: "12px",
+          mixBlendMode: "difference",
           textDecoration: "none",
-        }}
+        } as CSSProperties}
       >
-        ↗
+        {displayUrl}
       </a>
     </div>
   );

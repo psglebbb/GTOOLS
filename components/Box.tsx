@@ -53,6 +53,8 @@ export function Box({
       {showLive && (
         <LivePreview
           url={embedUrl}
+          linkUrl={entry.url}
+          displayUrl={displayUrl}
           posterUrl={imageUrl}
           title={entry.title}
         />
