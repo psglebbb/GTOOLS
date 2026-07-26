@@ -3,11 +3,11 @@
 import { type CSSProperties } from "react";
 
 // A live, embedded 16:9 preview of the tool's own website with the big WWW-URL
-// title layer permanently overlaid in difference blend — the same treatment as
-// the custom "Picture + Title" boxes. The site preview underneath is dimmed to
-// ~50% so the title always reads. The title is the click target (opens the real
-// site in a new tab); the iframe itself is non-interactive so it never traps
-// page scroll.
+// title layer permanently overlaid, top-aligned and tinted in the box's own
+// category colour (the same colour system as the Title boxes). The site preview
+// underneath is dimmed to ~50% so the title always reads. The title is the click
+// target (opens the real site in a new tab); the iframe itself is non-interactive
+// so it never traps page scroll.
 //
 // The iframe mounts directly (native lazy-loading keeps off-screen boxes in the
 // active column from all fetching at once) and is rendered at a "desktop" width
@@ -27,12 +27,14 @@ export function LivePreview({
   displayUrl,
   posterUrl,
   title,
+  accent,
 }: {
   url: string;
   linkUrl?: string;
   displayUrl: string;
   posterUrl?: string | null;
   title?: string;
+  accent: string;
 }) {
   return (
     <div
@@ -76,8 +78,8 @@ export function LivePreview({
         } as CSSProperties}
       />
 
-      {/* Big WWW-URL title, permanently overlaid in difference blend — same logic
-          as the Picture + Title boxes. Clicking it opens the real site. */}
+      {/* Big WWW-URL title, permanently overlaid, top-aligned and tinted in the
+          box's category colour. Clicking it opens the real site. */}
       <a
         href={linkUrl ?? url}
         target="_blank"
@@ -88,7 +90,7 @@ export function LivePreview({
           inset: 0,
           zIndex: 2,
           display: "flex",
-          alignItems: "center",
+          alignItems: "flex-start",
           justifyContent: "center",
           fontFamily: "var(--font-display)",
           fontWeight: 400,
@@ -97,9 +99,8 @@ export function LivePreview({
           textTransform: "uppercase",
           whiteSpace: "pre-line",
           wordBreak: "break-word",
-          padding: "8px",
-          color: "#FFFFFF",
-          mixBlendMode: "difference",
+          padding: "10px 8px 8px",
+          color: accent,
           textDecoration: "none",
         } as CSSProperties}
       >

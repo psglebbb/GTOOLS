@@ -57,6 +57,7 @@ export function Box({
           displayUrl={displayUrl}
           posterUrl={imageUrl}
           title={entry.title}
+          accent={categoryColor}
         />
       )}
 
